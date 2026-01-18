@@ -1,0 +1,78 @@
+﻿@using OE.Web.Models
+@{
+    var Layoutmodel = (IndexLayoutVM)ViewBag.IndexLayoutVM;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Html.Raw(Layoutmodel.InstitutionName)</title>
+    <link rel="shortcut icon" href="~/@Html.Raw(Layoutmodel.Favicon)">
+    <environment include="Development">
+        <!--Default CSS Files-->
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+
+        <!--Others CSS Files-->
+        <link rel="stylesheet" href="~/DataDictionary/css/common/cssCommon.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/frontend/common.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/frontend/Home.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/frontend/Account.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/frontend/Login.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/DatePicker/css/bootstrap-datepicker.css" type="text/css" />
+       
+    </environment>
+    <environment exclude="Development">
+        <!--Default CSS Files-->
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
+        <link rel="stylesheet" href="~/css/site.css" />
+
+        <!--Others CSS Files-->
+        <link rel="stylesheet" href="~/DataDictionary/css/common/cssCommon.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/frontend/common.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/frontend/Home.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/frontend/Account.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/frontend/Login.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/DatePicker/css/bootstrap-datepicker.css" type="text/css" />
+        
+    </environment>
+</head>
+<body>
+    @Html.Partial("_header.cshtml")
+    <div class="container body-content">
+        <h3 align="center">@ViewData["Title"]@Html.Raw(Layoutmodel.InstitutionName)</h3>
+        <div style=" min-height: calc(100vh - 190px);">
+            @RenderBody()
+        </div>
+
+        <hr />
+        <footer>
+            <p>
+                <a asp-area="" asp-controller="Home" asp-action="About">About OurEdu</a> |
+                <a asp-area="" asp-controller="Home" asp-action="Contact">Contact with OurEdu</a>
+            </p>
+            <p>OurEdu &copy; 2019 &nbsp; |&nbsp; Version-0.1.4 (Demo Version) </p>
+        </footer>
+    </div>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/DataDictionary/DatePicker/js/bootstrap-datepicker.js"></script>
+
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/DataDictionary/DatePicker/js/bootstrap-datepicker.min.js"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

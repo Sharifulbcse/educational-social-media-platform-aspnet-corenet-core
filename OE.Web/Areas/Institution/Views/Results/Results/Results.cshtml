@@ -1,0 +1,86 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexResultsVM
+
+<div class="informationArea">
+    <span class="label label-info "> Institution: @Model.InstitutionName </span>
+</div>
+
+<h1 class="page-title">Results</h1>
+<div>
+    <ol class="breadcrumb pull-left" style="background-color:transparent">
+        <li><a asp-area="Institution" asp-controller="Results" asp-action="ResultSearchByRegister">Results Search</a></li>
+        <li class="active">Result lists</li>
+    </ol>
+</div>
+
+<br />
+<br />
+<br />
+@if (Model.resultsListVM.Count() == 0)
+{
+    <div class="well"><b>No Record has been added yet.</b></div>
+}
+
+else
+{
+    <div class="table-responsive">
+        <form enctype="multipart/form-data">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Student Id</th>
+                        <th>Student Name</th>
+                        <th>Teacher Name</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Mark Type</th>
+                        <th>Exam Type</th>
+                        <th>Year</th>
+                        <th>Mark</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    @for (int i = 0; i < Model.resultsListVM.Count; i++)
+                    {
+                        <tr>
+                            <td class="showDetails pointer"> <input type="hidden" name="resultsListVM[@i].StudentId" id="resultsListVM[@i].StudentId" value="@Model.resultsListVM[@i].StudentId" />@Model.resultsListVM[@i].StudentId</td>
+                            <td class="showDetails pointer"> <input type="hidden" name="resultsListVM[@i].StudentName" id="resultsListVM[@i].StudentName" value="@Model.resultsListVM[@i].StudentName" />@Model.resultsListVM[@i].StudentName</td>
+                            <td class="showDetails pointer hidden"> <input name="resultsListVM[@i].EmployeeId" id="resultsListVM[@i].EmployeeId" value="@Model.resultsListVM[@i].EmployeeId" /></td>
+                            <td class="showDetails pointer"> <input type="hidden" name="resultsListVM[@i].EmployeeName" id="resultsListVM[@i].EmployeeName" value="@Model.resultsListVM[@i].EmployeeName" />@Model.resultsListVM[@i].EmployeeName</td>
+                            <td class="showDetails pointer hidden"> <input name="resultsListVM[@i].ClassId" id="resultsListVM[@i].ClassId" value="@Model.resultsListVM[@i].ClassId" /></td>
+                            <td class="showDetails pointer"> <input type="hidden" name="resultsListVM[@i].ClassName" id="resultsListVM[@i].ClassName" value="@Model.resultsListVM[@i].ClassName" />@Model.resultsListVM[@i].ClassName</td>
+                            <td class="showDetails pointer hidden"> <input name="resultsListVM[@i].SubjectId" id="resultsListVM[@i].SubjectId" value="@Model.resultsListVM[@i].SubjectId" /></td>
+                            <td class="showDetails pointer"> <input type="hidden" name="resultsListVM[@i].SubjectName" id="resultsListVM[@i].SubjectName" value="@Model.resultsListVM[@i].SubjectName" />@Model.resultsListVM[@i].SubjectName</td>
+                            <td class="showDetails pointer hidden"> <input name="resultsListVM[@i].MarkTypeId" id="resultsListVM[@i].MarkTypeId" value="@Model.resultsListVM[@i].MarkTypeId" /></td>
+                            <td class="showDetails pointer"> <input type="hidden" name="resultsListVM[@i].MarkTypeName" id="resultsListVM[@i].MarkTypeName" value="@Model.resultsListVM[@i].MarkTypeName" />@Model.resultsListVM[@i].MarkTypeName</td>
+                            <td class="showDetails pointer hidden"> <input name="resultsListVM[@i].ExamTypeId" id="resultsListVM[@i].ExamTypeId" value="@Model.resultsListVM[@i].ExamTypeId" /></td>
+                            <td class="showDetails pointer"> <input type="hidden" name="resultsListVM[@i].ExamTypeName" id="resultsListVM[@i].ExamTypeName" value="@Model.resultsListVM[@i].ExamTypeName" />@Model.resultsListVM[@i].ExamTypeName</td>
+                            <td class="showDetails pointer"> <input type="hidden" name="resultsListVM[@i].Year" id="resultsListVM[@i].Year" value="@Model.resultsListVM[@i].Year" />@Model.resultsListVM[@i].Year.Year</td>
+                            <td class="showDetails pointer"><input type="text" id="resultsListVM[@i].Mark" name="resultsListVM[@i].Mark" /></td>
+
+                        </tr>
+
+                    }
+
+
+                </tbody>
+            </table>
+
+
+            <button class="btn btn-success btn-md" formmethod="post"
+                    asp-controller="Results"
+                    asp-action="AddResult">
+                <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                Save
+            </button>
+
+
+            <button class="btn btn-danger btn-md " data-dismiss="modal">
+                <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                Cancel
+            </button>
+        </form>
+    </div>
+}
+<!-- #endregion  "All Modals"-->

@@ -1,0 +1,211 @@
+﻿
+@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexAssignedOrUnassignedStudentsListVM
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName</span>
+    </div>
+    <h1 class="page-title">Assign Student</h1>
+
+    <div>
+        <ol class="breadcrumb pull-left" style="background-color:transparent">
+            <li><a asp-area="Institution" asp-controller="AssignedStudents" asp-action="">Assigned Student Search</a></li>
+            <li class="active">Assigned Students lists</li>
+        </ol>
+    </div>
+
+    <br />
+
+    <br />
+    <br />
+    @if (Model._StudentPromotions.Count == 0)
+    {
+        <div class="well"><b>No Record has been matched according to selections.</b></div>
+    }
+
+    else
+    {
+        <form enctype="multipart/form-data">
+            <div class="row col-md-lg" style="padding:2px 31px;">             
+
+                <label>Current Year: @Model.Year <input type="hidden" id="Year" name="Year" value="@Model.Year" /> </label> <br />
+                <label>Selected Class: @Model.ClassName <input type="hidden" id="ClassId" name="ClassId" value="@Model.ClassId" /> </label> <br />
+                <label>Selected Course: @Model.AssignedCourseName <input type="hidden" id="CourseId" name="AssignedCourseId" value="@Model.AssignedCourseId" /></label> <br />
+                <label>Selected Section: @Model.AssignedSectionName <input type="hidden" id="SectionId" name="AssignedSectionId" value=@Model.AssignedSectionId /></label> <br />
+                <input type="hidden" id="SubjectTypeId" name="SubjectTypeId" value="@Model.SubjectTypeId" /><br />
+                
+            </div>
+            
+            <a class="pull-right" href="#" id="selectAll" style="padding-right:16px; font:bold">Edit All</a>
+            
+
+            <div class="col-md-12" id="ViewSection">
+                <table class="table table-bordered table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>Roll No</th>
+                            <th>Name</th>
+                            <th>Is Assigned?</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int i = 1;}
+                        @for (int ii = 0; ii < Model._StudentPromotions.Count; ii++)
+                        {
+                            string Icon_Ok = "<i class=" + "\"sign glyphicon  glyphicon-ok \"" + "style =" + " \"font-size:20px;color:green;\"" + "></i>";
+                            string Icon_Remove = "<i class=" + "\"sign glyphicon  glyphicon-remove \"" + "style =" + " \"font-size:20px;color:red;\"" + "></i>";
+                            i = (i + 1);
+                            <tr>
+                                <td class="showDetails pointer">
+                                    <b>@i</b>
+                                    <input type="hidden" name="_AssignedStudents[@ii].StudentId" value="@Model._StudentPromotions[ii].StudentId" />
+                                </td>
+                                <td class="showDetails pointer">
+                                    @Model._StudentPromotions[ii].RollNo
+                                </td>
+                                <td class="showDetails pointer">
+                                    <p>@Model._StudentPromotions[ii].StudentName</p>
+                                </td>
+                                <td class="showDetails pointer">
+                                    @Html.Raw(@Model._StudentPromotions[ii].IsAssigned == true ? Icon_Ok : Icon_Remove)
+                                    <input class="chk" type="checkbox" name="_AssignedStudents[@ii].IsAssigned" value="true" @(@Model._StudentPromotions[ii].IsAssigned == true ? "checked=\"checked\"" : "") style="width:40px; height:40px; cursor:pointer; display:none" />
+                                </td>
+                                <td class="showDetails pointer">                                    
+                                    <button class="btn btn-primary btn-sm edit" type="button" id="btnEdit" name="btnEdit" data-toggle="modal" data-target="#modalEdit" data-studentId="@Model._StudentPromotions[ii].StudentId" data-studentName="@Model._StudentPromotions[ii].StudentName" data-isAssigned="@Model._StudentPromotions[ii].IsAssigned" data-rollno="@Model._StudentPromotions[ii].RollNo">
+                                        <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                                        Edit
+                                    </button>
+                                    
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+                <button class="btn btn-success btn-md" formmethod="post"
+                        asp-controller="AssignedStudents"
+                        asp-action="EditAssignedStudents">
+                    <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                    Apply All
+                </button>
+            </div>
+        </form>
+        <!--#endregion " View Section"-->
+
+        
+        <div id="modalEdit" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Update Assigned Student</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" enctype="multipart/form-data" method="post">
+                            <br />
+                            <div class="row" style="text-align:center">
+                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                    <input type="hidden" name="Year" value="@Model.Year" />
+                                    <label>Selected Class: @Model.ClassName<input type="hidden" name="ClassId" value="@Model.ClassId" /></label>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                    <label>Selected Course: @Model.AssignedCourseName<input type="hidden" name="AssignedCourseId" value="@Model.AssignedCourseId" /></label>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                    <label>Selected Section: @Model.AssignedSectionName<input type="hidden" name="AssignedSectionId" value="@Model.AssignedSectionId" /></label>
+                                    <input type="hidden" name="SubjectTypeId" value="@Model.SubjectTypeId" />
+                                </div>
+                            </div>
+
+                            <table class="table table-bordered table-hover table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Roll No</th>
+                                        <th>Is Assigned?</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="showDetails pointer">
+                                            <text id="txtStudentName"></text><input type="hidden" name="StudentId" id="txtStudentId">
+                                        </td>
+                                        <td class="showDetails pointer">
+                                            <text id="txtRollNo"></text>
+                                        </td>
+                                        <td class="showDetails pointer">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="true" name="IsAssigned" id="editIsAssigned">Assign Student</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr />
+                            <button class="btn btn-success btn-md" formmethod="post"
+                                    asp-controller="AssignedStudents"
+                                    asp-action="EditAssignedStudent">
+                                <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                                Save
+                            </button>
+
+                            <button class="btn btn-danger btn-md " data-dismiss="modal">
+                                <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                                Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+    }
+
+    <!-- #region "All Scripts" -->
+
+    @section Scripts
+        {
+        <script type="text/javascript">
+            var temp = false;
+            $("#selectAll").on("click", function () {
+                if (temp == false) {
+                    $(".chk").show();
+                    $("#selectAll").text("Cancel All");
+                    $('td:nth-child(5),th:nth-child(5)').hide();
+                    $(".sign").hide();
+                    temp = true;
+                } else {
+                    $(".chk").hide();
+                    $("#selectAll").text("Edit All");
+                    $('td:nth-child(5),th:nth-child(5)').show();
+                    $(".sign").show();
+                    temp = false
+                }
+            });
+
+            $('tr td #btnEdit').on('click', function () {
+                $("#txtStudentId").val($(this).data("studentid"));
+                $("#txtStudentName").text($(this).data("studentname"));
+                $("#txtRollNo").text($(this).data("rollno"));
+                var isAssigned = $(this).data("isassigned");
+                if (isAssigned == "True") {
+                    $('#editIsAssigned').prop('checked', true);
+                } else {
+                    $('#editIsAssigned').prop('checked', false);
+                }
+            });
+
+                    
+        </script>
+    }
+    <!-- #endregion  "All Scripts"-->
+}
+

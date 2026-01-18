@@ -1,0 +1,535 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    <h1 class="page-title">Student Profile</h1>
+    <div>
+        <ol class="breadcrumb pull-left" style="background-color:transparent">
+            <li><a asp-area="Institution" asp-controller="Students" asp-action="">Student search</a></li>
+            <li class="active">Student's Info</li>
+        </ol>
+    </div>
+
+    <br />
+    <br />
+    <br />
+
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse">
+                        <b>Basic Information</b>
+                    </a>
+                    <a class="pull-right" href="#" id="basicEdit" data-ddlclass="@Model.Student.ClassId" data-ddlgender="@Model.Student.GenderId">
+                        <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                        Edit
+                    </a>
+                </h4>
+            </div>
+
+            <div class="panel-collapse">
+                <div class="panel-body">
+                    <div class="container">
+                        <div class="row">
+                            <!--#region "Basic Information View Section"-->
+                            <div class="col-md-12" id="BasicViewSection">
+                                <div class="col-md-6">
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Full Name:</div><div class="col-md-7">@Model.Student.Name</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Student Id:</div><div class="col-md-7">@Model.Student.Id</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">OurEdu Id:</div><div class="col-md-7 @(Model.Student.UserId != null ?"":"text-danger")">@Model.Student.UserName</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Class:</div><div class="col-md-7">@Model.Student.ClassName</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Atmitted Roll No:</div><div class="col-md-7">@Model.Student.RollNo</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Gender:</div><div class="col-md-7">@Model.Student.GenderName</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Date Of Birth:</div><div class="col-md-7">@Model.Student.DOB.ToShortDateString()</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Present Address:</div><div class="col-md-7">@Model.Student.PresentAddress</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Permanent Address:</div><div class="col-md-7">@Model.Student.PermanentAddress</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Addmited Year:</div><div class="col-md-7">@Model.Student.AdmittedYear.Year</div></div>
+                                    <div class="row" style="padding:8px"> <div class="col-md-5">Is Active:</div><div class="col-md-7"><label class="checkbox-inline"><input type="checkbox" disabled @(Model.Student.IsActive == true ? "checked=\"checked\"" : "")></label></div></div>
+
+                                </div>
+                                @if (String.IsNullOrEmpty(@Model.Student.IP300X200))
+                                {
+                                    switch (Model.Student.GenderId)
+                                    {
+                                        case 1:
+                                            <div class="col-md-6"><br /><br /><img class="img-rounded" src="~/DataDictionary/images/defaultImages/GenderMale.png" alt="Student Image missing" style="width:250px; height:290px;" /></div>
+                                            break;
+                                        case 2:
+                                            <div class="col-md-6"><br /><br /><img class="img-rounded" src="~/DataDictionary/images/defaultImages/GenderFemale.png" alt="Student Image missing" style="width:250px; height:290px;" /></div>
+                                            break;
+                                        case 3:
+                                            <div class="col-md-6"><br /><br /><img class="img-rounded" src="~/DataDictionary/images/defaultImages/GenderThird.png" alt="Student Image missing" style="width:250px; height:290px;" /></div>
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="col-md-6"><br /><br /><img class="img-rounded" src="~/@Model.Student.IP300X200" asp-append-version="true" alt="Student Image missing" style="width:250px; height:290px;" /></div>
+                                }
+
+
+                            </div>
+                            <!--#endregion "Basic Information View Section"-->
+                            <!--#region "Basic Information Add Form Section"-->
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="col-md-12" id="BasicEditSection" style="display:none">
+                                    <div class="col-md-6">
+                                        <div class="row" style="padding:2px"> <div class="col-md-5">Full Name:</div><div class="col-md-7"><input class="form-control" type="text" name="name" value="@Model.Student.Name" /></div></div>
+                                        <div class="row" style="padding:2px"> <div class="col-md-5">Student Id:</div><div class="col-md-7"><input class="form-control" type="text" name="studentId" value="@Model.Student.Id" disabled /> </div></div>
+                                        <div class="row" style="padding:2px"> <div class="col-md-5">OurEdu Id:</div><div class="col-md-7"><input class="form-control" type="text" id="userLoginId" name="userLoginId" value="@(Model.Student.UserId!=null? Model.Student.UserName:"")" /> </div></div>
+                                        <input class="hidden" type="text" id="oldUserLoginId" name="oldUserLoginId" value="@(Model.Student.UserId!=null? Model.Student.UserName:"")" />
+                                        <div class="row" style="padding:2px">
+                                            <div class="col-md-5">Class:</div><div class="col-md-7">
+                                                <select class="form-control" id="ddlClassId" asp-for-id="ddlClassId" name="ddlClassId"
+                                                        asp-items="@(new SelectList ( ViewBag.ddlClass, "Id","Name"))"></select>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding:2px"> <div class="col-md-5">Admitted Roll No:</div><div class="col-md-7"><input class="form-control" type="number" id="rollNo" name="rollNo" value="@Model.Student.RollNo" /> </div></div>
+                                        <input class="hidden" type="text" id="oldRollNo" name="oldRollNo" value="@Model.Student.RollNo" />
+                                        <input class="hidden" type="text" id="admittedClassId" name="admittedClassId" value="@Model.Student.ClassId" />
+                                        <input class="hidden" type="text" id="admittedPYear" name="admittedPYear" value="@Model.Student.AdmittedYear.Year" />
+                                        <input class="hidden" type="text" id="institutionId" name="institutionId" value="@Model.Student.InstitutionId" />
+                                        <div class="row" style="padding:2px">
+                                            <div class="col-md-5">Gender:</div>
+
+                                            <div class="col-md-7">
+                                                <select class="form-control" id="ddlGenderId" asp-for-id="GenderId" name="ddlGenderId"
+                                                        asp-items="@(new SelectList (ViewBag.ddlGender, "Id","Name"))"></select>
+
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding:2px"> <div class="col-md-5">Date Of Birth:</div><div class="col-md-7"><input class="form-control" type="text" name="dob" value="@Model.Student.DOB.ToShortDateString()" id="editDOB" /></div></div>
+                                        <div class="row" style="padding:2px"> <div class="col-md-5">Present Address:</div><div class="col-md-7"><textarea class="form-control" rows="2" name="presentAddress">@Model.Student.PresentAddress</textarea></div></div>
+                                        <div class="row" style="padding:2px"> <div class="col-md-5">Permanent Address:</div><div class="col-md-7"><textarea class="form-control" rows="2" name="permanentAddress">@Model.Student.PermanentAddress</textarea></div></div>
+                                        <div class="row" style="padding:2px"> <div class="col-md-5"><p style="padding-top:9px">Addmited Year:</p></div><div class="col-md-7"><input class="form-control" type="text" name="admittedYear" id="admittedYear" value="@Model.Student.AdmittedYear.Year" /></div></div>
+                                        <div class="row" style="padding:2px"> <div class="col-md-5">Is Active</div><div class="col-md-7"><label class="checkbox-inline"><input type="checkbox" value="true" name="enableAuthentic" @(Model.Student.IsActive == true ? "checked=\"checked\"" : "")></label></div></div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <br /><br />
+                                        @if (String.IsNullOrEmpty(Model.Student.IP300X200))
+                                        {
+                                            switch (Model.Student.GenderId)
+                                            {
+                                                case 1:
+                                                    <img id="studentImage" class="img-rounded" src="~/DataDictionary/images/defaultImages/GenderMale.png" alt="Image missing" style="width:250px; height:290px;" />
+                                                    break;
+                                                case 2:
+                                                    <img id="studentImage" class="img-rounded" src="~/DataDictionary/images/defaultImages/GenderFemale.png" alt="Image missing" style="width:250px; height:290px;" />
+                                                    break;
+                                                case 3:
+                                                    <img id="studentImage" class="img-rounded" src="~/DataDictionary/images/defaultImages/GenderThird.png" alt="Image missing" style="width:250px; height:290px;" />
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img id="studentImage" class="img-rounded" src="~/@Model.Student.IP300X200" asp-append-version="true" alt="Student Image missing" style="height:250px; width:290px" /><br />
+                                        }
+
+                                        <input type="file"
+                                               onchange="document.getElementById('studentImage').src = window.URL.createObjectURL(this.files[0])"
+                                               name="ip300x200">
+                                    </div>
+                                    <div class="col-md-12 center-block">
+                                        <div class="col-md-6">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button id="basicEditSave" style="display:none" class="btn btn-success" asp-area="Institution" asp-controller="Students" asp-action="UpdateStudentDetails" asp-route-id="@Model.Student.Id" asp-route-studentId="@Model.Student.Id" asp-route-name="name" asp-route-ddlClassId="ddlClassId" asp-route-rollNo="rollNo" asp-route-admittedClassId="admittedClassId" asp-route-admittedPYear="admittedPYear" asp-route-ddlGenderId="ddlGenderId" asp-route-dob="dob" asp-route-presentAddress="presentAddress" asp-route-permanentAddress="permanentAddress" asp-route-enableAuthentic="enableAuthentic" asp-route-admittedYear="admittedYear" asp-route-ip300x200="ip300x200" asp-route-flagValue="1"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                            <button id="fakeButton" type="button" class="btn btn-success"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                            <button class="btn btn-danger @(Model.Student.IP300X200 == null ? "hide" : "")" asp-area="Institution" asp-controller="Students" formmethod="post" asp-action="DeleteStaticFile" asp-route-id="@Model.Student.Id" asp-route-studentId="@Model.Student.Id" asp-route-flagValue="1"><span class="glyphicon glyphicon-trash"></span> Remove Image</button>
+                                            <a class="btn btn-danger" style="padding:5px" id="basicCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <!--#endregion "Basic Information Add Form Section"-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="modal fade" id="MessageBox" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title text-center" id="exampleModalLongTitle">Message</h3>
+                    </div>
+                    <div class="modal-body text-center text-danger">
+
+                        <h3 id="msg"></h3>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @{ int count = 0;}
+        @foreach (var item in Model._RegistrationGroups)
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#@item.Id">
+                            <b>@item.Name</b>
+                        </a>
+                    </h4>
+                </div>
+                <div id="@item.Id" class="panel-collapse ">
+                    <div class="panel-body">
+                        @foreach (var insideRegItem in Model._RegistrationItems)
+                        {
+                            @if (insideRegItem.RegistrationGroupId == item.Id)
+                            {
+                                <div class="row">
+                                    <div class="col-md-12" style="padding:5px">
+                                        <div class="col-md-4" style="padding-left:45px">@insideRegItem.Name:</div>
+                                        @foreach (var it in Model._StudentDetails)
+                                        {
+                                            if (insideRegItem.Id == it.RegistrationItemId)
+                                            {
+                                                <!--#region "Dynamic Edit Forms"-->
+                                                <div class="@(it.RegistrationItemTypeId == 1 ? "col-md-8" : "hide")" id="test" style="padding:0px">
+                                                    <p class="col-lg-6"><a href="~/@it.FilePathValue" target="_blank" class="@(it.FilePathValue == null ? "hide" : "")"><span class="glyphicon glyphicon-folder-open"> Download</span></a></p><button class="btn btn-default" id="lnkEdit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                                                    <form enctype="multipart/form-data" hidden>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <input class="form-control" type="file" name="filePath" />
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="UpdateStudentDetails" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemId="@it.RegistrationItemId" asp-route-regItemTypeId="1" asp-route-flagValue="2"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                                <button class="btn btn-default @(it.FilePathValue == null ? "hide" : "")" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="DeleteStaticFile" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemTypeId="1" asp-route-flagValue="2"><span class="glyphicon glyphicon-trash"></span> Delete File</button>
+                                                                <div class="btn btn-default" style="padding:5px" id="lnkCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                            </div>
+                                                        </div>
+                                                        <br />
+                                                    </form>
+                                                </div>
+                                                <div class="@(it.RegistrationItemTypeId == 2 ? "col-md-8" : "hide")" id="test" style="padding:0px">
+                                                    <p class="col-lg-6"><a href="~/@it.ImagePathValue" class="@(it.ImagePathValue == null ? "hide" : "")" target="_blank"><span class="glyphicon glyphicon-picture"> Download</span></a></p><button class="btn btn-default" href="#" id="lnkEdit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                                                    <form enctype="multipart/form-data" hidden>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <input class="form-control" type="file" name="imagePath" />
+                                                            </div>
+                                                            <div class="col-md-6 bottom-right">
+                                                                <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="UpdateStudentDetails" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemId="@it.RegistrationItemId" asp-route-regItemTypeId="2" asp-route-flagValue="2"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                                <button class="btn btn-default @(it.ImagePathValue == null ? "hide" : "")" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="DeleteStaticFile" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemTypeId="2" asp-route-flagValue="2"><span class="glyphicon glyphicon-trash"></span> Delete Image</button>
+                                                                <div class="btn btn-default" style="padding:5px" id="lnkCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="@(it.RegistrationItemTypeId == 3 ? "col-md-8" : "hide")" id="test" style="padding:0px">
+                                                    <p class="col-lg-6"><input type="checkbox" disabled @(it.BitValue == true ? "checked" : "") /></p><button class="btn btn-default" id="lnkEdit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                                                    <form enctype="multipart/form-data" hidden>
+                                                        <div class="row">
+                                                            <div class="col-md-6"><input class="checkbox-inline" type="checkbox" name="bitValue" @(it.BitValue == true ? "checked" : "") value="true" /></div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="UpdateStudentDetails" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemId="@it.RegistrationItemId" asp-route-regItemTypeId="3" asp-route-flagValue="2"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                                <div class="btn btn-default" style="padding:5px" id="lnkCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                            </div>
+                                                        </div>
+                                                        <br />
+                                                    </form>
+                                                </div>
+                                                <div class="@(it.RegistrationItemTypeId == 4 ? "col-md-8" : "hide")" id="test" style="padding:0px">
+                                                    <p class="col-md-6">@it.StringValue</p><button class="btn btn-default" id="lnkEdit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                                                    <form enctype="multipart/form-data" hidden>
+                                                        <div class="row">
+                                                            <div class="col-md-6"><input class="form-control" type="text" name="stringValue" value="@it.StringValue" /></div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="UpdateStudentDetails" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemId="@it.RegistrationItemId" asp-route-regItemTypeId="4" asp-route-flagValue="2"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                                <div class="btn btn-default" style="padding:5px" id="lnkCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="@(it.RegistrationItemTypeId == 5 ? "col-md-8" : "hide")" id="test" style="padding:0px">
+                                                    <p class="col-lg-6">@it.WholeValue</p><button class="btn btn-default" id="lnkEdit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                                                    <form enctype="multipart/form-data" hidden>
+                                                        <div class="row">
+                                                            <div class="col-md-6"><input class="form-control" type="number" name="wholeValue" value="@it.WholeValue" /></div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="UpdateStudentDetails" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemId="@it.RegistrationItemId" asp-route-regItemTypeId="5" asp-route-flagValue="2"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                                <div class="btn btn-default" style="padding:5px" id="lnkCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="@(it.RegistrationItemTypeId == 6 ? "col-md-8" : "hide")" id="test" style="padding:0px">
+                                                    <p class="col-lg-6">@it.FloatValue</p><button class="btn btn-default" id="lnkEdit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                                                    <form enctype="multipart/form-data" hidden>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <input class="form-control" type="number" name="floatValue" value="@it.FloatValue" />
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="UpdateStudentDetails" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemId="@it.RegistrationItemId" asp-route-regItemTypeId="6" asp-route-flagValue="2"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                                <div class="btn btn-default" style="padding:5px" id="lnkCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="@(it.RegistrationItemTypeId == 7 ? "col-md-8" : "hide")" id="test" style="padding:0px">
+                                                    <p class="col-lg-6 text-justify">@it.TextAreaValue</p><button class="btn btn-default" id="lnkEdit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                                                    <form enctype="multipart/form-data" hidden>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <textarea class="form-control" rows="2" name="txtAreaValue">@it.TextAreaValue</textarea>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="UpdateStudentDetails" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemId="@it.RegistrationItemId" asp-route-regItemTypeId="7" asp-route-flagValue="2"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                                <div class="btn btn-default" style="padding:5px" id="lnkCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="@(it.RegistrationItemTypeId == 8 ? "col-md-8" : "hide")" id="test" style="padding:0px">
+                                                    <p class="col-lg-6">@it.DateValue</p><button class="btn btn-default" id="lnkEdit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                                                    <form enctype="multipart/form-data" hidden method="post">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <input class="form-control" type="text" name="dateValue" value="@it.DateValue" id="customEditDate" />
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="UpdateStudentDetails" asp-route-id="@it.Id" asp-route-studentId="@it.StudentId" asp-route-regItemId="@it.RegistrationItemId" asp-route-regItemTypeId="8" asp-route-flagValue="2"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                                <div class="btn btn-default" style="padding:5px" id="lnkCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <!--#endregion "Dynamic Edit Forms"-->
+                                                count = 1;
+                                            }
+
+                                        }
+                                        @if (count == 0)
+                                        {
+                                            <!--#region "Dynamic Add Forms"-->
+                                            <div class="@(insideRegItem.RegistrationItemTypeId == 1 ? "col-md-8" : "hide")" id="addSection" style="padding:0px">
+                                                <p class="col-lg-6 text-danger h5">Record is not found.</p><button class="btn btn-default" id="btnAdd"><span class="glyphicon glyphicon-plus"></span> Add New</button>
+                                                <form enctype="multipart/form-data" hidden>
+                                                    <div class="row">
+                                                        <div class="col-md-6">File Upload: <input class="form-control" type="file" name="filePath" /></div>
+                                                        <div class="col-md-6">
+                                                            <br />
+                                                            <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="AddStudentDetails" asp-route-studentId="@Model.Student.Id" asp-route-regItemId="@insideRegItem.Id" asp-route-regItemTypeId="1"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                            <div class="btn btn-default" style="padding:5px" id="btnCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </form>
+                                            </div>
+                                            <div class="@(insideRegItem.RegistrationItemTypeId == 2 ? "col-md-8" : "hide")" id="addSection" style="padding:0px">
+                                                <p class="col-lg-6 text-danger h5">Record is not found.</p><button class="btn btn-default" id="btnAdd"><span class="glyphicon glyphicon-plus"></span> Add New</button>
+                                                <form enctype="multipart/form-data" hidden>
+                                                    <div class="row">
+                                                        <div class="col-md-6">Image Upload: <input class="form-control" type="file" name="imagePath" /> </div>
+                                                        <div class="col-md-6">
+                                                            <br />
+                                                            <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="AddStudentDetails" asp-route-studentId="@Model.Student.Id" asp-route-regItemId="@insideRegItem.Id" asp-route-regItemTypeId="2"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                            <div class="btn btn-default" style="padding:5px" id="btnCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </form>
+                                            </div>
+                                            <div class="@(insideRegItem.RegistrationItemTypeId == 3 ? "col-md-8" : "hide")" id="addSection" style="padding:0px">
+                                                <p class="col-lg-6 text-danger h5">Record is not found.</p><button class="btn btn-default" id="btnAdd"><span class="glyphicon glyphicon-plus"></span> Add New</button>
+                                                <form enctype="multipart/form-data" hidden>
+                                                    <div class="row">
+                                                        <div class="col-md-6"><input class="checkbox-inline" type="checkbox" name="bitValue" value="true" /></div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="AddStudentDetails" asp-route-studentId="@Model.Student.Id" asp-route-regItemId="@insideRegItem.Id" asp-route-regItemTypeId="3"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                            <div class="btn btn-default" style="padding:5px" id="btnCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </form>
+                                            </div>
+                                            <div class="@(insideRegItem.RegistrationItemTypeId == 4 ? "col-md-8" : "hide")" id="addSection" style="padding:0px">
+                                                <p class="col-lg-6 text-danger h5">Record is not found.</p><button class="btn btn-default" id="btnAdd"><span class="glyphicon glyphicon-plus"></span> Add New</button>
+                                                <form enctype="multipart/form-data" hidden>
+                                                    <div class="row">
+                                                        <div class="col-md-6"> <input class="form-control" type="text" name="stringValue" /></div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="AddStudentDetails" asp-route-studentId="@Model.Student.Id" asp-route-regItemId="@insideRegItem.Id" asp-route-regItemTypeId="4"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                            <div class="btn btn-default" style="padding:5px" id="btnCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </form>
+                                            </div>
+                                            <div class="@(insideRegItem.RegistrationItemTypeId == 5 ? "col-md-8" : "hide")" id="addSection" style="padding:0px">
+                                                <p class="col-lg-6 text-danger h5">Record is not found.</p><button class="btn btn-default" id="btnAdd"><span class="glyphicon glyphicon-plus"></span> Add New</button>
+                                                <form enctype="multipart/form-data" hidden>
+                                                    <div class="row">
+                                                        <div class="col-md-6"><input class="form-control" type="number" name="wholeValue" /></div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="AddStudentDetails" asp-route-studentId="@Model.Student.Id" asp-route-regItemId="@insideRegItem.Id" asp-route-regItemTypeId="5"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                            <div class="btn btn-default" style="padding:5px" id="btnCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </form>
+                                            </div>
+                                            <div class="@(insideRegItem.RegistrationItemTypeId == 6 ? "col-md-8" : "hide")" id="addSection" style="padding:0px">
+                                                <p class="col-lg-6 text-danger h5">Record is not found.</p><button class="btn btn-default" id="btnAdd"><span class="glyphicon glyphicon-plus"></span> Add New</button>
+                                                <form enctype="multipart/form-data" hidden>
+                                                    <div class="row">
+                                                        <div class="col-md-6"><input class="form-control" type="number" name="floatValue" /></div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="AddStudentDetails" asp-route-studentId="@Model.Student.Id" asp-route-regItemId="@insideRegItem.Id" asp-route-regItemTypeId="6"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                            <div class="btn btn-default" style="padding:5px" id="btnCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </form>
+                                            </div>
+                                            <div class="@(insideRegItem.RegistrationItemTypeId == 7 ? "col-md-8" : "hide")" id="addSection" style="padding:0px">
+                                                <p class="col-lg-6 text-danger h5">Record is not found.</p><button class="btn btn-default" id="btnAdd"><span class="glyphicon glyphicon-plus"></span> Add New</button>
+                                                <form enctype="multipart/form-data" hidden>
+                                                    <div class="row">
+                                                        <div class="col-md-6"> <textarea class="form-control" rows="2" name="txtAreaValue"></textarea></div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="AddStudentDetails" asp-route-studentId="@Model.Student.Id" asp-route-regItemId="@insideRegItem.Id" asp-route-regItemTypeId="7"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                            <div class="btn btn-default" style="padding:5px" id="btnCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </form>
+                                            </div>
+                                            <div class="@(insideRegItem.RegistrationItemTypeId == 8 ? "col-md-8" : "hide")" id="addSection" style="padding:0px">
+                                                <p class="col-lg-6 text-danger h5">Record is not found.</p><button class="btn btn-default" id="btnAdd"><span class="glyphicon glyphicon-plus"></span> Add New</button>
+                                                <form enctype="multipart/form-data" hidden>
+                                                    <div class="row">
+                                                        <div class="col-md-6"> <input class="form-control" type="text" name="dateValue" id="customAddDate" /></div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn btn-default" style="padding:5px" formmethod="post" asp-area="Institution" asp-controller="Students" asp-action="AddStudentDetails" asp-route-studentId="@Model.Student.Id" asp-route-regItemId="@insideRegItem.Id" asp-route-regItemTypeId="8"><span class="glyphicon glyphicon-save"></span> Save</button>
+                                                            <div class="btn btn-default" style="padding:5px" id="btnCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </form>
+                                            </div>
+                                            <!--#endregion "Dynamic Add Forms"-->
+                                        }
+                                    </div>
+                                </div>
+                                count = 0;
+                            }
+
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+    <!-- #region "All Scripts" -->
+
+    @section Scripts
+        {
+        <script type="text/javascript">
+        //#region "JS for DatePicker"
+        $('#addSection #customAddDate').datepicker({ format: "dd/MM/yyyy", autoclose: true });
+        $('#test #customEditDate').datepicker({ format: "dd/MM/yyyy", autoclose: true });
+        $('#editDOB').datepicker({ format: "dd/MM/yyyy", autoclose: true });
+        $('#admittedYear').datepicker({
+            format: "yyyy",
+            viewMode: "years",
+            minViewMode: "years",
+            autoclose: true
+        });
+        //#endregion "JS for DatePicker"
+        //#region "JS for BasicInformation's Edit and Cancel buttons"
+        $('#basicEdit').on('click', function () {
+            $('#BasicViewSection').hide();
+            $('#BasicEditSection').show();
+            $("#ddlClassId").val($(this).data("ddlclass"));
+            $("#ddlGenderId").val($(this).data("ddlgender"));
+        });
+        $('#basicCancel').on('click', function () {
+            $('#BasicEditSection').hide();
+            $('#BasicViewSection').show();
+        });
+        //#endregion "JS for BasicInformation's Edit and Cancel buttons"
+        var flag = 0;
+        //#region "JS for DynamicField's Edit and Cancel buttons"
+        $("#test #lnkEdit").on('click', function () {
+            if (flag == 0) {
+                $(this).siblings('p').hide();
+                $(this).hide();
+                $(this).siblings('form').show();
+                flag = 1;
+            } else alert("Please close opened input field first.");
+        });
+
+        $("#test #lnkCancel").on('click', function () {
+            $("#test form").hide();
+            $("#test p").show();
+            $("#test button").show();
+            flag = 0;
+        });
+        //#endregion "JS for DynamicField's Edit and Cancel buttons"
+        //#region "JS for DynamicField's Add and Cancel buttons"
+        $('#addSection #btnAdd').on('click', function () {
+            if (flag == 0) {
+                $(this).siblings('p').hide();
+                $(this).siblings('form').show();
+                $(this).hide();
+                flag = 1;
+            } else alert("Please close opened input field first.");
+
+        });
+        $('#addSection #btnCancel').on('click', function () {
+            $("#addSection #btnAdd").show();
+            $("#addSection p").show();
+            $("#addSection form").hide();
+            flag = 0;
+        });
+        //#endregion "JS for DynamicField's Add and Cancel buttons"
+
+        //[NOTE: Checking valid UserLoginId]
+        $('#fakeButton').on('click', function () {
+            var userLoginId = $("#userLoginId").val();
+            var institutionId = $("#institutionId").val();
+            var oldUserLoginId = $('#oldUserLoginId').val();
+            var admittedYear = $('#admittedYear').val();
+            var admittedPYear = $('#admittedPYear').val();
+            var admittedClassId = $('#admittedClassId').val();
+            var ddlClassId = $('#ddlClassId').val();
+            var rollNo = $('#rollNo').val();
+            var oldRollNo = $('#oldRollNo').val();
+                $.ajax({
+                    type: 'POST',
+                    data: { 'userLoginId': userLoginId, 'institutionId': institutionId, 'oldUserLoginId': oldUserLoginId, 'admittedYear': admittedYear, 'admittedPYear': admittedPYear, 'admittedClassId': admittedClassId, 'ddlClassId': ddlClassId, 'rollNo': rollNo, 'oldRollNo': oldRollNo },
+                    url: '@Url.Action("CheckValidUserLoginIdAndRoll", "Students", new { Area = "Institution" })',
+
+                        success: function (data) {
+                            if (data != null) {
+                                if (data.errorMessage == null) {
+                                    $('#basicEditSave').click();
+                            } else {
+                                $('#msg').text(data.errorMessage);
+                                $('#MessageBox').modal();
+                            }
+                        }
+                    }
+            });
+        });
+        </script>
+    }
+
+    <!-- #endregion  "All Scripts"-->
+}
+

@@ -1,0 +1,203 @@
+﻿
+@model OE.Web.Areas.Institution.Models.IndexResultsVM
+
+@{
+    ViewData["Title"] = "Result Sheet";
+}
+
+<h1 class="page-title">Result Sheet</h1>
+
+<div class="input-group pull-right">
+    <form asp-controller="Results" asp-action="ResultSheet" method="get">
+        <div class="input-group">
+            <input type="text" name="year" class="form-control" value="@((Model.resultsListVM.Count == 0)?"":Model.resultsListVM[0].Year.Year.ToString())" />
+            <div class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<br />
+<br />
+<div class="col-md-12">
+    <table class="table table-bordered table-hover" id="datatable">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Subject</th>
+                <th>Mark Type</th>
+                <th>Exam Name</th>
+                <th>Teacher Name</th>
+                <th>Year</th>
+                <th>Mark</th>
+                <th> </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var data in Model.resultsListVM)
+            {
+                <tr>
+                    <td id="studentname" class="showDetails pointer">
+                        <p> @data.StudentName</p>
+                    </td>
+                    <td id="classname" class="showDetails pointer">
+                        <p>@data.ClassName</p>
+                    </td>
+                    <td id="subjectname" class="showDetails pointer">
+                        <p>@data.SubjectName</p>
+                    </td>
+                    <td id="marktypename" class="showDetails pointer">
+                        <p>@data.MarkTypeName</p>
+                    </td>
+                    <td id="examtypename" class="showDetails pointer">
+                        <p>@data.ExamTypeName</p>
+                    </td>
+                    <td id="employeename" class="showDetails pointer">
+                        <p>@data.EmployeeName</p>
+                    </td>
+                    <td id="year" class="showDetails pointer">
+                        <p>@data.Year.Year</p>
+                    </td>
+                    <td id="mark" class="showDetails pointer">
+                        <p>@data.Mark</p>
+                    </td>
+                    <td id="buttons">
+                        <button class="btn btn-primary btn-sm btnEditDelete" id="btnEdit" data-id="@data.Id" data-studentid="@data.StudentId" data-classid="@data.ClassId" data-year="@data.Year.Year" data-roll="@data.Mark">
+                            <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                            Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm btnEditDelete" id="btnDelete" data-id="@data.Id">
+                            <span class="glyphicon glyphicon-trash" style="vertical-align:middle;margin-top: -5px"></span>
+                            Delete
+                        </button>
+                        <button class="btn btn-primary btn-sm btnUpdateCancel" id="btnUpdate" data-id="@data.Id" style="display:none">
+                            <span class="glyphicon glyphicon-save" style="vertical-align:middle;margin-top: -5px"></span>
+                            Update
+                        </button>
+                        <button class="btn btn-danger btn-sm btnUpdateCancel" id="btnEditCancel" style="display:none">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top: -5px"></span>
+                            Cancel
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+    <link rel="stylesheet" href="~/lib/DataTable/DataTables-1.10.18/css/jquery.dataTables.css" />
+    <script src="~/lib/DataTable/DataTables-1.10.18/js/jquery.dataTables.js"></script>
+
+    <script type="text/javascript">
+                    //Table converted into DataTable
+                    $(document).ready(function () {
+                        $("#datatable").dataTable();
+
+                        $('#editYear').datepicker({
+                            format: "yyyy",
+                            viewMode: "years",
+                            minViewMode: "years",
+                            autoclose: true
+                        });
+                    });
+
+                    //Displaying data for Updating
+                    var flag = false;
+                    $("tr td #btnEdit").on('click', function () {
+                        if (flag == false) {
+                            var currentRow = $(this).closest('tr');
+                            $(currentRow).children('#year').children('p').hide();
+                            $(currentRow).children('#roll').children('p').hide();
+                            $(currentRow).children('#classname').children('p').hide();
+                            $(currentRow).children('#studentname').children('p').hide();
+                            $(currentRow).children('#buttons').children('.btnEditDelete').hide();
+
+                            $(currentRow).children('#year').children('input').show();
+                            $(currentRow).children('#roll').children('input').show();
+                            $(currentRow).children('#classname').children('#editddlClass').show();
+                            $(currentRow).children('#studentname').children('#editddlStudent').show();
+                            $(currentRow).children('#buttons').children('.btnUpdateCancel').show();
+
+                            $(currentRow).children('#year').children('#editYear').val($(this).data('year'));
+                            $(currentRow).children('#roll').children('#editRoll').val($(this).data('roll'));
+                            $(currentRow).children('#classname').children('#editddlClass').val($(this).data('classid'));
+                            $(currentRow).children('#studentname').children('#editddlStudent').val($(this).data('studentid'));
+                            flag = true;
+                        } else closeInputFields(currentRow);
+
+                    });
+                    //Discard updating data.
+                    $("tr td #btnEditCancel").on('click', function () {
+                            var currentRow = $(this).closest('tr');
+                            $(currentRow).children('#year').children('input').hide();
+                            $(currentRow).children('#roll').children('input').hide();
+                            $(currentRow).children('#classname').children('#editddlClass').hide();
+                            $(currentRow).children('#studentname').children('#editddlStudent').hide();
+                            $(currentRow).children('#buttons').children('.btnUpdateCancel').hide();
+
+                            $(currentRow).children('#year').children('p').show();
+                            $(currentRow).children('#roll').children('p').show();
+                            $(currentRow).children('#classname').children('p').show();
+                            $(currentRow).children('#studentname').children('p').show();
+                            $(currentRow).children('#buttons').children('.btnEditDelete').show();
+                            flag = false;
+                    });
+
+                    $("tr td #btnUpdate").on('click', function () {
+                        var currentRow = $(this).closest('tr');
+                        var editId = $(this).data('id');
+                        var editYear = $(currentRow).children('#year').children('#editYear').val();
+                        var editRoll = $(currentRow).children('#roll').children('#editRoll').val();
+                        var editClassId = $(currentRow).children('#classname').children('#editddlClass').val();
+                        var editStudentId = $(currentRow).children('#studentname').children('#editddlStudent').val();
+
+                        //Sending ajax request to Add method of AssignedSections Controller.
+                         $.ajax({
+                            type: 'POST',
+                            data: { 'editId': editId, 'editYear': editYear, 'editRoll': editRoll, 'editClassId': editClassId,'editStudentId': editStudentId},
+                            url: '@Url.Action("EditPromotedStudent", "Students", new { Area = "Institution" })',
+                            traditional: true,
+                            success: function (message) {
+                            location.reload();
+                            }
+                        });
+
+
+                    });
+                    function closeInputFields(test) {
+
+                    }
+
+                    //Delete existing data
+                    $("tr td #btnDelete").on('click', function () {
+                        var delId = $(this).data('id');
+                        if (confirm("Are u sure you want to delete current record?")) {
+                        $.ajax({
+                            type: 'POST',
+                            data: { 'delId': delId },
+                            url: '@Url.Action("DeletePromotedStudent", "Students", new { Area = "Institution" })',
+                            traditional: true,
+                            success: function (message) {
+                            location.reload();
+                            }
+                        });
+                        } else { }
+
+                    });
+
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

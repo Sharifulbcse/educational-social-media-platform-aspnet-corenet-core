@@ -1,0 +1,44 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexOE_UsersVM
+
+@using Microsoft.AspNetCore.Http;
+@{
+    Layout = "~/Areas/Institution/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Index";
+}
+<h1 class="page-title">Dashboard</h1>
+<div class="container">
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 ">
+        @{
+            if (Model.users.IP300X200 == null)
+            {
+                if (Model.users.GenderId == 1)
+                {
+                    <img src="~/DataDictionary/images/defaultImages/GenderMale.png" alt="Default Male Picture" />
+                }
+                if (Model.users.GenderId == 2)
+
+                {
+                    <img src="~/DataDictionary/images/defaultImages/GenderFemale.png" alt="Default Female Picture" />
+                }
+                if (Model.users.GenderId == 3)
+                {
+                    <img src="~/DataDictionary/images/defaultImages/GenderThird.png" alt="Default Common Picture" />
+                }
+            }
+            else
+            {
+                <img src="~/@Model.users.IP300X200" asp-append-version="true" alt="User Profile Picture" style=" width: 120%;
+        height: 150%;" />
+            }
+
+        }
+
+
+    </div>
+    
+    <vr />
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+       <h3>Welcome @Context.Session.GetString("session_UserName")</h3>
+
+    </div>
+</div>

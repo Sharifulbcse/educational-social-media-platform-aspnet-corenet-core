@@ -1,0 +1,227 @@
+﻿
+@model OE.Web.Areas.Institution.Models.IndexRegistrationItemVM
+<div class="informationArea">
+    <span class="label label-info "> Institution: @Model.InstitutionName </span>
+</div>
+
+<h1 class="page-title">Student Registration Form</h1>
+
+
+<br />
+
+<div id="message" class="text-center" @(ViewBag.successMsg == null && ViewBag.errorMsg == null ? "hidden" : "")>
+    <h2 class="text-success"><label>@ViewBag.successMsg</label></h2> <h2 class="text-danger"><label>@ViewBag.errorMsg</label></h2>
+</div>
+<div class="panel-group" id="accordion">
+    <form enctype="multipart/form-data" id="basicInsertForm">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse">
+                        <b>Basic Information</b>
+                    </a>
+                </h4>
+            </div>
+
+            <div class="panel-collapse">
+                <div class="panel-body">
+                    <div class="container">
+                        <div class="row">
+                            <!--#region "Basic Information View Section"-->
+                            <div class="col-md-12" id="BasicViewSection">
+                                <div class="col-md-6">
+                                    <div class="row" style="padding:2px">
+                                        <div class="col-md-5">
+                                            <label>OurEdu Id:</label>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input class="form-control" type="text" name="Students.UserLoginId" required />
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding:2px"> <div class="col-md-5"><label>Name:</label></div><div class="col-md-7"><input class="form-control" type="text" name="Students.Name" required /></div></div>
+                                    <div class="row" style="padding:2px">
+                                        <div class="col-md-5">
+                                            <label>Class:</label>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <select class="form-control" id="ClassId" asp-for-id="ClassId"
+                                                    name="Students.ClassId"
+                                                    asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                                                <option value="0">Select Class</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding:2px"> <div class="col-md-5"><label>Admission Date:</label></div><div class="col-md-7"><input class="form-control datepicker" type="text" name="Students.AdmittedYear" value="@DateTime.Now.ToString("dd-MMM-yyyy")" /></div></div>
+                                    
+                                    <div class="row" style="padding:2px"> <div class="col-md-5"><label>Roll No:</label></div><div class="col-md-7"><input class="form-control" type="number" name="RollNo" required /></div></div>
+                                    <div class="row" style="padding:2px">
+                                        <div class="col-md-5">
+                                            <label>Gender:</label>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <select class="form-control" id="GenderId" asp-for-id="GenderId"
+                                                    name="Students.GenderId"
+                                                    asp-items="@(new SelectList (ViewBag.ddlGender, "Id","Name"))"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding:2px"> <div class="col-md-5"><label>Date Of Birth:</label></div><div class="col-md-7"><input class="form-control datepicker" type="text" name="Students.DOB" /></div></div>
+                                    <div class="row" style="padding:2px"> <div class="col-md-5"><label>Present Address:</label></div><div class="col-md-7"> <textarea name="Students.PresentAddress" class="form-control" rows="3"></textarea></div></div>
+                                    <div class="row" style="padding:2px"> <div class="col-md-5"><label>Permanent Address:</label></div><div class="col-md-7"> <textarea name="Students.PermanentAddress" class="form-control" rows="3"></textarea></div></div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <img id="studentImage" class="img-rounded" src="~/DataDictionary/images/defaultImages/GenderThird.png" asp-append-version="true" style="height:270px; width:270px" />
+                                    <input type="file" name="Students.ActualFile"
+                                           onchange="document.getElementById('studentImage').src = window.URL.createObjectURL(this.files[0])">
+                                </div>
+                            </div>
+                            <!--#endregion "Basic Information View Section"-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @{ int i = 0; }
+        @foreach (var rg in Model._RegistrationGroupList)
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion">
+                            <b>@rg.Name</b>
+                        </a>
+                    </h4>
+                </div>
+                <div class="panel-collapse ">
+                    <div class="panel-body">
+
+                        @foreach (var rGroup in Model._RegistrationItemList)
+                        {
+                            if (rg.Id == rGroup.RegistrationGroupId)
+                            {
+                                <div class="col-md-12" style="padding:2px; padding-left: 17px;">
+                                    <div class="col-md-3"><label style="padding-top:5px">@rGroup.Name</label></div>
+                                    <div class="col-md-9">
+                                        <input type="hidden" name="studentsDetailsLists[@i].RegistrationItemId" value="@rGroup.Id" />
+                                        <input type="hidden" name="studentsDetailsLists[@i].RegistrationItemTypeId" value="@rGroup.RegistrationItemTypeId" />
+                                        @switch (rGroup.RegistrationItemTypeId)
+                                        {
+                                            case 1:
+                                                {
+                                                    <input type="file" name="studentsDetailsLists[@i].ActualFile" class="form-control">
+                                                    break;
+                                                }
+                                            case 2:
+                                                {
+                                                    <input type="file" name="studentsDetailsLists[@i].ActualImage" class="form-control">
+                                                    break;
+                                                }
+                                            case 3:
+                                                {
+                                                    <label><input type="checkbox" name="studentsDetailsLists[@i].BitValue" value="true"> Check/Uncheck</label>
+                                                    break;
+                                                }
+                                            case 4:
+                                                {
+                                                    <input type="text" name="studentsDetailsLists[@i].StringValue" class="form-control">
+                                                    break;
+                                                }
+                                            case 5:
+                                                {
+                                                    <input type="text" name="studentsDetailsLists[@i].WholeValue" class="form-control">
+                                                    break;
+                                                }
+                                            case 6:
+                                                {
+                                                    <input type="text" name="studentsDetailsLists[@i].FloatValue" class="form-control">
+                                                    break;
+                                                }
+                                            case 7:
+                                                {
+                                                    <textarea name="studentsDetailsLists[@i].TextAreaValue" class="form-control" rows="3"></textarea>
+                                                    break;
+                                                }
+                                            case 8:
+                                                {
+                                                    <input type="text" name="studentsDetailsLists[@i].DateValue" class="form-control datepicker" />
+                                                    break;
+                                                }
+                                        }
+
+                                    </div>
+                                </div>
+                                i++;
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        <br />
+        <button type="button" class="btn btn-success"
+                id="btnSave">
+            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+            Finish Registration
+        </button>
+    </form>
+</div>
+
+<div class="modal fade" id="MessageBox" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-center" id="exampleModalLongTitle">Message</h3>
+            </div>
+            <div class="modal-body text-center text-danger">
+
+                <h3 id="msg"></h3>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(".datepicker").datepicker({
+            format: "dd-MM-yyyy",
+            autoclose: true
+        });
+
+        $("#message").delay(1000).fadeOut(1000);
+
+        $("#btnSave").on('click', function () {
+            var formData = new FormData($("#basicInsertForm")[0]);
+                $.ajax({
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+
+
+                    url: '@Url.Action("AddStudentRegistrationForm", "Registrations", new { Area = "Institution" })',
+                    success: function (data) {
+                        if (data != null) {
+                            if (data.errorMessage == null) {
+                                location.reload();
+                            } else {
+                                $('#msg').text(data.errorMessage);
+                                $('#MessageBox').modal();
+                            }
+                        }
+                        else {
+                            location.reload();
+                        }
+                    }
+                });
+        });
+
+    </script>
+}
+

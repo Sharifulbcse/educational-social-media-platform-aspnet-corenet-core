@@ -1,0 +1,298 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexInstitutionLinksVM
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+    <h1 class="page-title">All Institution Links</h1>
+    <br />
+    <button class="btn btn-success btn-sm " id="btnAddInstitutionLinks" name="btnAddInstitutionLinks" data-toggle="modal" data-target="#mdlAddInstitutionLinks">
+        <span class="glyphicon glyphicon-plus" style="vertical-align:middle;margin-top: -5px"></span>
+        New
+    </button>
+
+
+    <br />
+    <br />
+    @if (Model._InstitutionLinksList.Count() == 0)
+    {
+        <div class="well"><b>No Usefull links has been added yet.</b></div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="tblGetInsLinks">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th> Url </th>
+                        <th>Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var data in Model._InstitutionLinksList)
+                    {
+                        <tr>
+                            <td class="showDetails pointer">
+                                @data.Name
+                                <br />
+                                <img id="IP24X24" src="~/@data.IP24X24" asp-append-version="true" style="max-height:80px;max-width:80px;" />
+                            </td>
+                            <td class="showDetails pointer">@data.Url</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" id="btnEdit" name="btnEdit" data-toggle="modal" data-target="#modalEdit"
+                                        data-id="@data.Id"
+                                        data-name="@data.Name"
+                                        data-ip24X24="@data.IP24X24"
+                                        data-url="@data.Url">
+                                    <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                                    Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm " id="btnDeleteInsLinks" data-toggle="modal" data-target="#modalDelete" data-id="@data.Id">
+                                    <span class="glyphicon glyphicon-trash" style="vertical-align:middle;margin-top: -5px"></span>
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+    }
+    <!-- #region "All Modals" -->
+
+    <div id="mdlAddInstitutionLinks" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3>Add Institution Links</h3>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data" id="addInstitionLinks">
+                        <label>Name:</label>
+                        <input type="text" name="InstitutionLinks.Name" id="txtAddName" required class="form-control">
+
+                        <br />
+
+                        <label>Image</label>
+
+                        <input type="file" id="fleAddIP24X24" name="socialimage" class="form-control">
+                        <br />
+                        <img id="addImage" alt="titleImage" asp-append-version="true" style="display:none" height="150" width="200" />
+                        <br />
+                        <label>Url</label>
+                        <input type="text" name="InstitutionLinks.Url" id="txtAddUrl" required class="form-control">
+                        <hr />
+                        <button class="btn btn-success btn-md" id="btnSaveNewInstitutionLinks">
+                            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                            Save
+                        </button>
+                        <button class="btn btn-danger btn-md " data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            Cancel
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="modalEdit" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Institution Links</h4>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data">
+                        <input type="hidden" name="InstitutionLinks.Id" id="txtEditId">
+                        <label> Name:</label>
+                        <input type="text" name="InstitutionLinks.Name" id="txtEditName" required class="form-control">
+                        <br />
+                        <label>Image</label>
+                        <input type="file" id="fleEditIP24X24" name="socialimage" class="form-control" />
+
+                        <br />
+                        <img id="editImage" alt="titleImage" asp-append-version="true" height="150" width="200" />
+                        <br />
+                        <label>Url</label>
+                        <input type="text" name="InstitutionLinks.Url" id="txtEditUrl" required class="form-control" />
+                        <hr />
+                        <button class="btn btn-success btn-md" formmethod="post"
+                                asp-controller="InstitutionLinks"
+                                asp-action="EditInstitutionLinks">
+                            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                            Save
+                        </button>
+                        <button class="btn btn-danger btn-md " data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            Cancel
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalDelete" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <form enctype="multipart/form-data" id="insLinks">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete Institution Links</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <p><h3>Are you sure you want to delete this?</h3></p>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="insLinksId" id="insLinksId">
+                        <button class="btn btn-md btn-success" id="btnDeleteInstitutionLinksId">
+                            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                            Yes
+                        </button>
+                        <button class="btn btn-danger btn-md " data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            No
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="modalMessage" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Message</h4>
+                </div>
+                <div class="modal-body">
+                    <p><h3 id="txtMessage" style="color:red"></h3></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Ok
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- #endregion  "All Modals"-->
+    <!-- #region "All Scripts" -->
+
+    @section Scripts
+        {
+
+        <script type="text/javascript">
+            $('tr td #btnEdit').on('click', function () {
+                $("#txtEditId").val($(this).data("id"));
+                $("#txtEditName").val($(this).data("name"));
+                $("#txtEditUrl").val($(this).data("url"));
+
+                var num = Math.random();
+                var i = "/" + $(this).data('ip24x24') + "?v=" + num;
+                $('#editImage').attr('src', i);
+            });
+
+             //[NOTE:JS for passing Id while trying to delete a record.]
+            $('#tblGetInsLinks tr td #btnDeleteInsLinks').on('click', function () {
+                $("#insLinksId").val($(this).data("id"));
+            });
+
+
+
+            $("#btnDeleteInstitutionLinksId").on('click', function (e) {
+            e.preventDefault();
+            var insLinksId = $('input#insLinksId').val();
+            $.ajax({
+                type: 'POST',
+                data: { insLinksId: insLinksId },
+                dataType: 'json',
+                cache: false,
+               url: '@Url.Action("DeleteInstitutionLinks", "InstitutionLinks", new { Area = "Institution" })',
+                 success:function (data) {
+                        if (data.success == true) {
+                            location.reload();
+                        }
+                        if (data.success == false) {
+                            $('#txtMessage').text(data.message);
+                            $('#modalMessage').modal('show');
+                        }
+                    },
+                error: function (data) {
+
+                },
+                complete: function (data) {
+
+                }
+                
+             });
+        });
+
+            $('#fleAddIP24X24').on('change', function () {
+                var t = window.URL.createObjectURL(this.files[0]);
+                $('#addImage').attr('src', t);
+                $('#addImage').show();
+            });
+            $('#fleEditIP24X24').on('change', function () {
+                var t = window.URL.createObjectURL(this.files[0]);
+                $('#editImage').attr('src', t);
+                $('#editImage').show();
+            });
+
+            $("#btnSaveNewInstitutionLinks").on('click', function (e) {
+            e.preventDefault();
+                 var formData = new FormData($("#addInstitionLinks")[0]);
+             $.ajax({
+               type: 'POST',
+               data: formData,
+               contentType: false,
+               processData: false,
+
+               url: '@Url.Action("InsertInstitutionLinks", "InstitutionLinks", new { Area = "Institution" })',
+                 success: function (response) {
+                     location.reload();
+                 },
+                 error: function (response) {
+                     alert('error: ' + response.message);
+                 },
+                 complete: function () {
+                 }
+
+                });
+  });
+
+        </script>
+    } <!-- #endregion  "All Scripts"-->
+
+}

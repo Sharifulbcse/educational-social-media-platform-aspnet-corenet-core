@@ -1,0 +1,200 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexDistributionMarksVM
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+    <h1 class="page-title">Distribution Mark List</h1>
+    <br />
+    
+    <h6><a asp-area="Institution" asp-controller="DistributionMarks" asp-action="DistributionMarkActionDates">Distribution Mark Action Date</a><span class="glyphicon glyphicon-chevron-right"></span>Distribution Mark List</h6>
+    <br />
+    <button class="btn btn-success btn-sm " data-toggle="modal" data-target="#mdlFilter">
+        <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+        Filter Search
+    </button>
+    <br />
+    <br />
+    
+    <div class="row">
+        <label>Class Name:</label> @Model.ClassName
+    </div>
+    <br />
+    <br />
+
+    @if (Model.subjects == null)
+    {
+        <div class="well"><b>No record available for this class.</b></div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>SN</th>
+                    <th>Subject</th>
+                    <th>Details Breakdown Mark</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int i = 0;}
+
+                @foreach (var data in Model.subjects)
+                {
+                    i = (i + 1);
+                    <tr>
+                        <td class="showDetails pointer">
+                            <b>@i</b>
+                        </td>
+                        <td class="showDetails pointer">
+                            @data.Name
+                        </td>
+                        <td class="showDetails pointer">
+                            @foreach (var item in Model.MarkType)
+                            {
+                                <span>@item.Name:</span>
+                                @foreach (var item2 in Model.distributionMarks)
+                                {
+                                    if (item2.SubjectId == data.Id && item2.MarkTypeId == item.Id)
+                                    {
+                                        <span>@item2.BreakDownInP</span>
+                                    }
+                                }
+                                <br />
+                            }
+                        </td>
+                        <td>
+                            
+                            <button class="btn btn-primary btn-sm" id="btnEdit" name="btnEdit" data-toggle="modal" data-target="#modalEdit" data-subjectid="@data.Id">
+                                <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                                Edit
+                            </button>
+                            
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        <h3 style="color:red">@ViewBag.err</h3>
+    }
+
+    <!-- #region "All Modals" -->
+    
+    <div id="mdlFilter" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3>Filter Search</h3>
+                </div>
+                <div class="modal-body">
+                    <form asp-area="Institution" asp-controller="DistributionMarks" asp-action="DistributionMarkList" method="post">
+                        <input type="hidden" name="distributionMarkActionDateId" id="distributionMarkActionDateId" value="@Model.DistributionMarkActionDateId" />
+
+                        <select class="form-control" id="classId" name="classId" asp-items="@(new SelectList (ViewBag.classId, "Id","Name",Model.SelectedClassId))">
+                            <option value="0">Select Class</option>
+                        </select>
+                        <hr />
+                        <button class="btn btn-success btn-md" formmethod="post"
+                                asp-controller="DistributionMarks"
+                                asp-action="DistributionMarkList"
+                                asp-route-distributionMarkActionDateId="distributionMarkActionDateId"
+                                asp-route-SelectedFilterSearchId="SelectedFilterSearchId"
+                                asp-route-classId="classId">
+                            <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+                            Search
+                        </button>
+                        <button class="btn btn-danger btn-md " data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            Cancel
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="modalEdit" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>                    
+                    <h4 class="modal-title">Mark Distribution</h4>                   
+                </div>
+                <div class="modal-body">                    
+                    <form enctype="multipart/form-data" id="addEditDistributionMark">
+                        <input type="hidden" name="SelectedSubjectId" id="editSubjcetId">                        
+                        @foreach (var item in Model.MarkType)
+                        {
+                            <input type="hidden" name="distributionMarks[@Model.MarkType.IndexOf(item)].MarkTypeId" id="distributionMarks[@Model.MarkType.IndexOf(item)].MarkTypeId" value="@item.Id">
+                            <input type="hidden" name="distributionMarks[@Model.MarkType.IndexOf(item)].ClassId" id="distributionMarks[@Model.MarkType.IndexOf(item)].ClassId" value="@Model.SelectedClassId">
+                            <input type="hidden" name="distributionMarks[@Model.MarkType.IndexOf(item)].DistributionMarkActionDateId" id="distributionMarks[@Model.MarkType.IndexOf(item)].DistributionMarkActionDateId" value="@Model.DistributionMarkActionDateId">
+                            <label>@item.Name Break Down Mark</label>                            
+                            <input type="number" name="distributionMarks[@Model.MarkType.IndexOf(item)].BreakDownInP" id="addBreakDownInP" required class="form-control datetime">
+                        }
+                        <hr />                        
+                        <button class="btn btn-success btn-md" id="btnSaveDistributionMark">
+                            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                            Save
+                        </button>
+                       
+                        <button class="btn btn-danger btn-md " data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            Cancel
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- #endregion  "All Modals"-->
+    <!-- #region "All Scripts" -->
+
+    @section Scripts {
+
+        <script type="text/javascript">
+
+            $('tr td #btnEdit').on('click', function () {               
+                $("#editSubjcetId").val($(this).data("subjectid"));                
+            });
+
+            $("#btnSaveDistributionMark").on('click', function (e) {
+            e.preventDefault();
+                var formData = new FormData($("#addEditDistributionMark")[0]);
+             $.ajax({
+               type: 'POST',
+               data: formData,
+               contentType: false,
+               processData: false,
+
+               url: '@Url.Action("InsertUpdateDistributionMarks", "DistributionMarks", new { Area = "Institution" })',
+                 success: function (response) {
+                     location.reload();
+                 },
+                 error: function (response) {
+                     alert('error: ' + response.message);
+                 },
+                 complete: function () {
+                 }
+
+             });
+            });
+            
+
+        </script>
+    }
+    <!-- #endregion  "All Scripts"-->
+}

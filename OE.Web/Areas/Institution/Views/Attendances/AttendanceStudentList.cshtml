@@ -1,0 +1,137 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexAttendanceStudentListVM
+    <ol class="breadcrumb pull-left" style="background-color:transparent">
+        <li><a asp-controller="Attendances" asp-action="RespectedCourses" asp-area="Institution">Courses Index</a></li>
+        <li class="active">Student List</li>
+    </ol>
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+    <br />
+    <br />
+    <h1 class="page-title">   @ViewData["Title"]</h1>
+    <br />
+    <form enctype="multipart/form-data">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xs-12">
+            <div class="row">
+                <div class="col-sm-6">
+                    Attendance Date
+                    <input type="text" class="form-control datepicker" name="SelectedDate" value="@DateTime.Now.ToString("dd/MMM/yyyy")" required />
+                </div>
+                <div class="col-sm-6">
+                    Time Slot
+                    <select class="form-control" name="ClassTimeScheduleId" required asp-items="@(new SelectList(ViewBag.ddlTimeSchedules, "Id","TimeStot"))">
+                        <option value="">Select TimeSlot</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <div class="col-md-12">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th width="50px"> #SN </th>
+                        <th width="120px"> Id</th>
+                        <th> Name</th>
+                        <th width="30px" class="text-center">
+                            <label class="checkbox-inline"><input type="checkbox" hidden id="selectAll" value="" /><span class="glyphicon glyphicon-check"></span> <b>Is All Present</b></label>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 1;}
+                    @for (int ii = 0; ii < Model._AssignedStudents.Count; ii++)
+                    {
+
+                        <tr>
+                            <td class="showDetails pointer"> @i</td>
+                            <td class="showDetails pointer"><input class="hidden" type="text" name="_Atendances[@ii].StudentId" value="@Model._AssignedStudents[ii].StudentId">@Model._AssignedStudents[ii].StudentId</td>
+                            <td class="showDetails pointer">
+                                <img class="img-circle" src="~/@Model._AssignedStudents[ii].IP300X200" alt="StudentPhoto" style="width:60px; height:60px" />
+                                <label><i>@Model._AssignedStudents[ii].StudentName</i></label>
+                            </td>
+                            <td class="showDetails pointer text-center"><input type="checkbox" name="_Atendances[@ii].IsPresent" value="true" style="width:40px; height:40px; cursor:pointer" /></td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+            <button class="btn btn-success btn-md" formmethod="post"
+                    asp-controller="Attendances"
+                    asp-action="AddAttendance"
+                    asp-route-SelectedYear="@Model.SelectedYear"
+                    asp-route-ClassId="@Model.ClassId"
+                    asp-route-AssignedCourseId="@Model.AssignedCourseId"
+                    asp-route-AssignedSectionId=" @Model.AssignedSectionId">
+                <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                Submit Attendance
+            </button>
+
+            <a class="btn btn-danger btn-md " data-dismiss="modal" asp-controller="Attendances" asp-action="RespectedCourses" asp-area="Institution">
+                <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                Cancel
+            </a>
+        </div>
+    </form>
+
+    <div id="modalMessage" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Message</h4>
+                </div>
+                <div class="modal-body">
+                    <p><h3 id="txtMessage"></h3></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Ok
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                $('#txtMessage').text("@ViewBag.Message");
+                $('#modalMessage').modal('show');
+            };
+        </script>
+    }
+    <!-- #region "All Scripts" -->
+
+    @section Scripts
+        {
+
+        <script type="text/javascript">
+            $(".datepicker").datepicker({
+                format: "dd/MM/yyyy",
+                autoclose: true
+            });
+
+            $('#selectAll').click(function () {
+                $(':checkbox').prop('checked', this.checked);
+            });
+        </script>
+    }
+    /**/
+
+    <!-- #endregion  "All Scripts"-->
+    /**/
+
+}

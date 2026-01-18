@@ -1,0 +1,176 @@
+﻿
+@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexAttendanceListForDeleteVM
+
+    <ol class="breadcrumb pull-left" style="background-color:transparent">
+        <li><a asp-controller="Attendances" asp-action="RespectedCoursesForDelete" asp-area="Institution">Courses Index</a></li>
+        <li class="active">Attendance List</li>
+    </ol>
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+    <br />
+    <br />
+    <h1 class="page-title">   @ViewData["Title"]</h1>
+    <br />
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-md-4">Class: <b>@Model.ClassName</b></div>
+            <div class="col-md-4">Course: <b>@Model.AssignedCourseName</b></div>
+            <div class="col-md-4">Section: <b>@Model.AssignedSectionName</b></div>
+        </div>
+    </div>
+    <br />
+    <div class="col-md-12">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th width="50px"> #SN </th>
+                    <th width="120px"> Date </th>
+                    <th class="text-center"> Time Slot</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int i = 1;}
+                @foreach (var item in Model._Atendances)
+                {
+                    <tr>
+                        <td class="showDetails pointer"> @i</td>
+                        <td class="showDetails pointer">@item.AttendanceDate.ToShortDateString()</td>
+                        <td class="showDetails pointer text-center">@item.TimeSlot</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" id="btnDelete" name="btnDelete" data-toggle="modal" data-target="#modalDelete" data-id="@item.Id" data-classid="@item.ClassId" data-assignedcourseid="@item.AssignedCourseId" data-assignedsectionid="@item.AssignedSectionId" data-employeeid="@item.EmployeeId" data-attendancedate="@item.AttendanceDate">
+                                <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                                Delete
+                            </button>
+                        </td>
+
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- #region "All Modals" -->
+    <div id="modalDelete" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <form enctype="multipart/form-data" id="delAttendanceList">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Confirm Message</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <p><h3>Are you sure you want to delete this?</h3></p>
+                    </div>
+                    <div class="modal-footer">
+
+                        <input type="hidden" name="Id" id="delId">
+                        <input type="hidden" name="AssignedCourseId" id="delAssignedCourseId">
+                        <input type="hidden" name="AssignedSectionId" id="delAssignedSectionId">
+                        <input type="hidden" name="ClassId" id="delClassId">
+                        <input type="hidden" name="EmployeeId" id="delEmployeeId">
+                        <input type="hidden" name="AttendanceDate" id="delAttendanceDate">
+                        <button class="btn btn-md btn-success" id="btnDeleteAttendance" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                            Yes
+                        </button>
+
+                        <button class="btn btn-danger btn-md " data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            No
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+   
+    <div id="modalMessage" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Message</h4>
+                </div>
+                <div class="modal-body">
+                    <p><h3 id="txtMessage" style="color:red"></h3></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Ok
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+  
+    <!-- #endregion  "All Modals"-->
+
+    <!-- #region "All Scripts" -->
+    @section Scripts
+        {
+
+        <script type="text/javascript">
+
+            $('tr td #btnDelete').on('click', function () {
+                $("#delId").val($(this).data("id"));
+                $("#delAssignedCourseId").val($(this).data("assignedcourseid"));
+                $("#delAssignedSectionId").val($(this).data("assignedsectionid"));
+                $("#delClassId").val($(this).data("classid"));
+                $("#delEmployeeId").val($(this).data("employeeid"));
+                $("#delAttendanceDate").val($(this).data("attendancedate"));
+            });
+
+            $("#btnDeleteAttendance").on('click', function (e) {
+            e.preventDefault();
+                var formData = new FormData($("#delAttendanceList")[0]);
+             $.ajax({
+               type: 'POST',
+               data: formData,
+               contentType: false,
+               processData: false,
+
+               url: '@Url.Action("DeleteAttendance", "Attendances", new { Area = "Institution" })',              
+                 success: function (data) {
+                     if (data.success == true) {
+                         location.reload();
+                     }
+                     if (data.success == false) {
+                         $('#txtMessage').text(data.message);
+                         $('#modalMessage').modal('show');
+                     }
+                 },
+                 error: function (data) {
+
+                 },
+                 complete: function (data) {
+
+                 }                
+
+             });
+        });
+
+        </script>
+
+    }
+
+    <!-- #endregion  "All Scripts"-->
+
+}

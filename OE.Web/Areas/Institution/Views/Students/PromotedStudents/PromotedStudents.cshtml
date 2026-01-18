@@ -1,0 +1,194 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexStudentPromotionsVM
+    ViewData["Title"] = "Promoted Students";
+
+
+    <h1 class="page-title">Promoted Students</h1>
+    <div>
+        <ol class="breadcrumb pull-left" style="background-color:transparent">
+            <li><a asp-area="Institution" asp-controller="Students" asp-action="PromotionSearch">Promotion Search</a></li>
+            <li class="active">Promoton Students</li>
+        </ol>
+    </div>
+
+    <br />
+    <div class="input-group pull-right">
+        <form asp-controller="Students" asp-action="PromotedStudents" method="get">
+            <div class="input-group">
+                <input type="text" name="year" class="form-control" value="@((Model._StudentPromotionsListVM.Count == 0)?"":Model._StudentPromotionsListVM[0].Year.Year.ToString())" />
+                <div class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <br />
+    <br />
+    <div class="col-md-12">
+        <table class="table table-bordered table-hover" id="datatable">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Year</th>
+                    <th width="10px">Roll</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var data in Model._StudentPromotionsListVM)
+                {
+                    
+                    <tr>
+                        <td class="hidden">
+                            <input type="hidden" name="StudentPromotions.Id" value="@data.Id" readonly />
+                        </td>
+                        <td id="studentname" class="showDetails pointer">
+
+                            <p><img class="img-circle" src="~/@data.StudentPhoto" alt="StudentPhoto" style="width:60px; height:60px;" /> @data.StudentName</p>
+                        </td>
+                        <td id="classname" class="showDetails pointer">
+                            <p>@data.ClassName</p>
+                            <select class="form-control" name="StudentPromotions.ClassId" id="editddlClass" style="display:none" asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name", data.ClassId))">
+                                <option value="0">Select Class</option>
+                            </select>
+                        </td>
+                        <td id="year" class="showDetails pointer">
+                            <p>@data.Year.Year</p>
+                            <input type="text" id="editYear" name="SelectedYear" class="form-control editYear" value="@data.Year.Year" style="display:none; width:58px" />
+                        </td>
+                        <td id="roll" class="showDetails pointer">
+                            <p>@data.RollNo</p>
+                            <input type="text" id="editRoll" name="StudentPromotions.RollNo" class="form-control" value="@data.RollNo" style="display:none; width:80px" />
+                        </td>
+                        <td id="buttons">
+                            <button class="btn btn-primary btn-sm btnEditDelete" type="button" id="btnEdit" data-id="@data.Id" data-classid="@data.ClassId" data-year="@data.Year.Year" data-roll="@data.RollNo">
+                                <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                                Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm btnEditDelete" id="btnDelete" type="submit" data-id="@data.Id">
+                                <span class="glyphicon glyphicon-trash" style="vertical-align:middle;margin-top: -5px"></span>
+                                Delete
+                            </button>
+                            <button class="btn btn-primary btn-sm btnUpdateCancel" type="submit" id="btnUpdate" data-id="@data.Id" style="display:none">
+                                <span class="glyphicon glyphicon-save" style="vertical-align:middle;margin-top: -5px"></span>
+                                Update
+                            </button>
+                            <button class="btn btn-danger btn-sm btnUpdateCancel" type="button" id="btnEditCancel" style="display:none">
+                                <span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top: -5px"></span>
+                                Cancel
+                            </button>
+                        </td>
+                    </tr>
+                    
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- #region "All Scripts" -->
+
+    @section Scripts
+        {
+        <link rel="stylesheet" href="~/lib/DataTable/DataTables-1.10.18/css/jquery.dataTables.css" />
+        <script src="~/lib/DataTable/DataTables-1.10.18/js/jquery.dataTables.js"></script>
+
+        <script type="text/javascript">
+            //Table converted into DataTable
+            $(document).ready(function () {
+                $("#datatable").dataTable();
+
+                $('.editYear').datepicker({
+                    format: "yyyy",
+                    viewMode: "years",
+                    minViewMode: "years",
+                    autoclose: true
+                });
+            });
+
+            //Displaying data for Updating
+            var flag = false;
+            $("tr td #btnEdit").on('click', function () {
+                if (flag == false) {
+                    var currentRow = $(this).closest('tr');
+                    $(currentRow).children('#classname').children('p').hide();
+                    $(currentRow).children('#year').children('p').hide();
+                    $(currentRow).children('#roll').children('p').hide();
+                    $(currentRow).children('#buttons').children('.btnEditDelete').hide();
+
+                    $(currentRow).children('#classname').children('#editddlClass').show();
+                    $(currentRow).children('#year').children('input').show();
+                    $(currentRow).children('#roll').children('input').show();
+                    $(currentRow).children('#buttons').children('.btnUpdateCancel').show();
+
+                    flag = true;
+                } else closeInputFields(currentRow);
+
+            });
+            //Discard updating data.
+            $("tr td #btnEditCancel").on('click', function () {
+                var currentRow = $(this).closest('tr');
+                $(currentRow).children('#year').children('input').hide();
+                $(currentRow).children('#roll').children('input').hide();
+                $(currentRow).children('#classname').children('#editddlClass').hide();
+                $(currentRow).children('#buttons').children('.btnUpdateCancel').hide();
+
+                $(currentRow).children('#year').children('p').show();
+                $(currentRow).children('#roll').children('p').show();
+                $(currentRow).children('#classname').children('p').show();
+                $(currentRow).children('#buttons').children('.btnEditDelete').show();
+                flag = false;
+            });
+         
+            $("tr td #btnUpdate").on('click', function () {
+                var currentRow = $(this).closest('tr');
+                var id = $(this).data('id');
+                var classs = $(currentRow).children('#classname').children('#editddlClass').children('option:selected').val();
+                var year = $(currentRow).children('#year').children('#editYear').val();
+                var roll = $(currentRow).children('#roll').children('#editRoll').val();
+                $.ajax({
+                    type: 'POST',
+                    data: { "StudentPromotions.Id": id, "StudentPromotions.ClassId": classs, "SelectedYear": year, "StudentPromotions.RollNo": roll },
+                    url: '@Url.Action("UpdatePromotion", "Students", new { Area = "Institution"})',
+                    traditional: true,
+                    success: function (message) {
+                    location.reload();
+                    }
+                });
+            });
+
+            $("tr td #btnDelete").on('click', function () {
+
+                var id = $(this).data('id');
+                $.ajax({
+                    type: 'POST',
+                    data: { "StudentPromotions.Id": id },
+                    url: '@Url.Action("DeletePromotion", "Students", new { Area = "Institution"})',
+                    traditional: true,
+                    success: function (message) {
+                    location.reload();
+                    }
+                });
+            });
+
+
+        </script>
+    }
+
+    <!-- #endregion  "All Scripts"-->
+}
+
+
+

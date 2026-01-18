@@ -1,0 +1,89 @@
+﻿
+@model OE.Web.Areas.Institution.Models.IndexResultsVM
+
+@{
+    Layout = "~/Areas/Institution/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Results";
+}
+
+
+
+<br />
+<br />
+<div class="container">
+    <div class="col-lg-9">
+        <h3 align="center">Results</h3>
+        <div class="panel panel-default" style="padding:130px; padding-top:10px">
+            <form asp-area="Institution" asp-controller="Results" asp-action="ResultSearchByRegister" method="get">
+                <br />
+                <label>Year</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-calendar"></i></span>
+                    <input type="text" name="searchYear" id="searchYear" value="@(Model.changeYear==0?DateTime.Now.Year:Model.changeYear)" class="form-control" onchange="this.form.submit();" required>
+                </div>
+                <br />
+                <label>Class</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-class"></i></span>
+                    @Html.DropDownList("ddlClassId", Model._classes, "All", new { @class = "form-control", @onchange = "this.form.submit();" })
+                </div>
+                <br />
+                <label>Subject</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-subject"></i></span>
+                    @Html.DropDownList("ddlSubjectId", Model._subject == null ? new SelectList(new[] { new { Id = 0, Value = "All" } }, "Id", "Value") : new SelectList(new[] { new { Id = 0, Value = "All" } }, "Id", "Value").Union(Model._subject), null, new { @class = "form-control", @onchange = "this.form.submit();" })
+                </div>
+                <br />
+                <label>Mark Type</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-subject"></i></span>
+                    @Html.DropDownList("ddlMarkTypeId", Model._mrkTyp == null ? new SelectList(new[] { new { Id = 0, Value = "All" } }, "Id", "Value") : new SelectList(new[] { new { Id = 0, Value = "All" } }, "Id", "Value").Union(Model._mrkTyp), null, new { @class = "form-control", @onchange = "this.form.submit();" })
+                </div>
+                <br />
+                <label>Exam Type</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-exam"></i></span>
+                    @Html.DropDownList("ddlExamTypeId", Model._xmTyp == null ? new SelectList(new[] { new { Id = 0, Value = "All" } }, "Id", "Value") : new SelectList(new[] { new { Id = 0, Value = "All" } }, "Id", "Value").Union(Model._xmTyp), null, new { @class = "form-control", @onchange = "this.form.submit();" })
+                </div>
+                <br />
+                <label>Teacher</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-teacher"></i></span>
+                    @Html.DropDownList("ddlEmployeeId", Model._employee == null ? new SelectList(new[] { new { Id = 0, Value = "All" } }, "Id", "Value") : new SelectList(new[] { new { Id = 0, Value = "All" } }, "Id", "Value").Union(Model._employee), null, new { @class = "form-control", @required = "required" })
+                </div>
+
+                <br />
+                <button class="btn btn-success btn-md" formmethod="get"
+                        asp-area="Institution"
+                        asp-controller="Results"
+                        asp-action="Results"
+                        asp-route-searchYear="searchYear"
+                        asp-route-ddlClassId="ddlClassId"
+                        asp-route-ddlSubjectId="ddlSubjectId"
+                        asp-route-ddlMarkTypeId="ddlMarkTypeId"
+                        asp-route-ddlExamTypeId="ddlExamTypeId"
+                        asp-route-ddlEmployeeId="ddlEmployeeId">
+                    <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $('#searchYear').datepicker({
+            format: "yyyy",
+            viewMode: "years",
+            minViewMode: "years",
+            autoclose: true
+        });
+
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

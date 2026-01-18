@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "Student Result";
+}
+
+@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexResultsVM
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+
+    <h1 class="page-title"><u>@Model.ExamTypeName @Model.SelectedYear Result</u></h1>
+
+    <br />
+
+    <div class="panel panel-default col-md-12">
+        <p><b>Personal Information</b></p>
+        <p>Name:@Model.StudentName</p>
+        <p>Class:@Model.ClassName</p>
+        <p>Result:@Model.ExamTypeName</p>
+        <p>Year:@Model.SelectedYear</p>
+    </div>
+
+    <div class="panel panel-default col-md-12">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>SL#</th>
+                    <th>Course Name</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                @{long SL = 0;}
+                @foreach (var data in Model.resultsListVM)
+                {
+                    <tr>
+                        <td class="showDetails pointer">@SL</td>
+                        <td class="showDetails pointer">@data.SubjectName</td>
+                        <td class="showDetails pointer">@data.Grade</td>
+                    </tr>
+                    SL++;
+                }
+                
+            </tbody>
+        </table>
+    </div>
+}
+<!-- #endregion  "All Scripts"-->

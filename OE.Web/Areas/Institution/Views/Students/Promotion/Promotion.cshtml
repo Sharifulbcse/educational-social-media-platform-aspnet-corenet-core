@@ -1,0 +1,85 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexStudentPromotionsVM
+
+<div class="informationArea">
+    <span class="label label-info "> Institution: @Model.InstitutionName </span>
+</div>
+
+<h1 class="page-title">Promotion Students</h1>
+<div>
+    <ol class="breadcrumb pull-left" style="background-color:transparent">
+        <li><a asp-area="Institution" asp-controller="Students" asp-action="PromotionSearch">Promotion Search</a></li>
+        <li class="active">Promoton Students Lists</li>
+    </ol>
+</div>
+
+<br />
+<br />
+<br />
+
+
+<div class="table-responsive">
+    <form enctype="multipart/form-data">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th width="80px">
+                        <label class="checkbox-inline"><input type="checkbox" hidden id="selectAll" value="" /><span class="glyphicon glyphicon-check"></span> <b>All</b></label>
+                    </th>
+                    <th> Id </th>
+                    <th> Name </th>
+                    <th> Class</th>
+                    <th> Year</th>
+                    <th> Roll</th>
+                </tr>
+            </thead>
+            <tbody>
+
+
+                @for (int i = 0; i < Model._StudentPromotionsListVM.Count; i++)
+                {
+
+                    <tr>
+                        <td class="showDetails pointer"><input type="checkbox" name="_StudentPromotionsListVM[@i].IsAllChecked" value="true"></td>
+                        <td class="showDetails pointer hidden"> <input name="_StudentPromotionsListVM[@i].Id" id="_StudentPromotionsListVM[@i].Id" value="@Model._StudentPromotionsListVM[i].Id" /></td>
+                        <td class="showDetails pointer"><input type="hidden" id="_StudentPromotionsListVM[@i].StudentId" name="_StudentPromotionsListVM[@i].StudentId" value="@Model._StudentPromotionsListVM[i].StudentId" />@Model._StudentPromotionsListVM[i].StudentId</td>
+                        <td class="showDetails pointer hidden"> <input name="_StudentPromotionsListVM[@i].PromotionClassId" id="_StudentPromotionsListVM[@i].PromotionClassId" value="@Model._StudentPromotionsListVM[i].PromotionClassId" /></td>
+                        <td class="showDetails pointer">
+                            <img class="img-circle" src="~/@Model._StudentPromotionsListVM[i].StudentPhoto" alt="StudentPhoto" width="60px" height="60px" />
+                            <label><i>@Model._StudentPromotionsListVM[i].StudentName</i></label>
+                        </td>
+                        <td class="showDetails pointer">@Model._StudentPromotionsListVM[i].PromotionClassName</td>
+                        <td class="showDetails pointer"><input type="hidden" name="_StudentPromotionsListVM[@i].PromotionYear" id="_StudentPromotionsListVM[@i].PromotionYear" value="@Model._StudentPromotionsListVM[i].PromotionYear" />@Model._StudentPromotionsListVM[i].PromotionYear</td>
+                        <td class="showDetails pointer"><input type="text" id="_StudentPromotionsListVM[@i].RollNo" name="_StudentPromotionsListVM[@i].RollNo" required /></td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+        <button class="btn btn-success btn-md" formmethod="post"
+                asp-controller="Students"
+                asp-action="AddPromotion">
+            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+            Save
+        </button>
+        <button class="btn btn-danger btn-md " type="button" onc onclick="history.back();" data-dismiss="modal">
+            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+            Cancel
+        </button>
+
+    </form>
+</div>
+<!-- #endregion  "All Modals"-->
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+
+    <script>
+        $('#selectAll').click(function () {
+            $(':checkbox').prop('checked', this.checked);
+        });
+    </script>
+}
+<!-- #endregion  "All Scripts"-->

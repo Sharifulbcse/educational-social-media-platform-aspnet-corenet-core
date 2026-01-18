@@ -1,0 +1,283 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexAssignedSectionVM
+
+@{
+    ViewData["Title"] = "Sections";
+}
+<div class="informationArea">
+    <span class="label label-info "> Institution: @Model.InstitutionName </span>
+</div>
+<h1 class="page-title">Assign Section</h1>
+<button class="btn btn-success" id="addsection">Assign Section</button>
+
+<button class="btn btn-success btn-sm " data-toggle="modal" data-target="#mdlFilter">
+    <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+    Filter Search
+</button>
+<div class="input-group pull-right">   
+    <label>
+        Current Year:
+        @((Model.CurrentSearchYear == 0) ? "" : Model.CurrentSearchYear.ToString() )
+    
+    </label>    
+</div>
+<br />
+<br />
+<div class="col-md-12">
+    <table class="table table-bordered table-hover" id="datatable">
+        <thead>
+            <tr>
+                <th> Year </th>
+                <th> Class</th>
+                <th> Section</th>
+                <th> </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="rowinput" style="display:none">
+                <td class="showDetails pointer"><input type="text" name="addYear" id="addYear" class="form-control" /></td>
+                <td class="showDetails pointer">
+                    <select class="form-control" id="addDdlClass" asp-for-id="Id" asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                        <option value="0">Select Class</option>
+
+                    </select>
+                </td>
+
+
+                <td class="showDetails pointer"><input type="text" name="addSection" id="addSection" class="form-control" /></td>
+
+                <td>
+                    <button class="btn btn-primary btn-sm" id="btnAddSave">
+                        <span class="glyphicon glyphicon-save" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+
+                    <button class="btn btn-danger btn-sm " id="btnAddCancel">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </td>
+            </tr>
+            @foreach (var data in Model.AssignedSectionList)
+            {
+                <tr>
+                    <td id="year" class="showDetails pointer">
+                        <p>@data.Year.Year</p>
+                        <input type="text" id="editYear" name="editYear" class="form-control" style="display:none" />
+                    </td>
+                    <td id="classname" class="showDetails pointer">
+                        <p>@data.ClassName</p>
+
+                        <select class="form-control" id="editddlClass" style="display:none" asp-for-id="Id" asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                            <option value="0">Select Class</option>
+                        </select>
+
+
+                    </td>
+                    <td id="sec" class="showDetails pointer">
+                        <p>@data.Name</p>
+                        <input type="text" id="editSection" name="editSection" class="form-control" style="display:none" />
+                    </td>
+                    <td id="buttons">
+                        <button class="btn btn-primary btn-sm btnEditDelete" id="btnEdit" data-id="@data.Id" data-name="@data.Name" data-classid="@data.ClassId" data-year="@data.Year.Year">
+                            <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                            Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm btnEditDelete" id="btnDelete" data-id="@data.Id">
+                            <span class="glyphicon glyphicon-trash" style="vertical-align:middle;margin-top: -5px"></span>
+                            Delete
+                        </button>
+                        <button class="btn btn-primary btn-sm btnUpdateCancel" id="btnUpdate" data-id="@data.Id" style="display:none">
+                            <span class="glyphicon glyphicon-save" style="vertical-align:middle;margin-top: -5px"></span>
+                            Update
+                        </button>
+                        <button class="btn btn-danger btn-sm btnUpdateCancel" id="btnEditCancel" style="display:none">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top: -5px"></span>
+                            Cancel
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+<!-- #region "All Modals" -->
+<div id="mdlFilter" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3>Filter Search</h3>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" id="frmFilter">
+                    <label>Year</label>
+                    <input type="text" name="Year" value="@((Model.AssignedSectionList.Count == 0)?"":Model.AssignedSectionList[0].Year.Year.ToString())" id="fltrYear" class="form-control">
+
+                    <label>Class</label>
+                    <select class="form-control" id="fltrClassId" name="ddlClass" asp-for-id="Id" asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                        <option value="0">Select Class</option>
+                    </select>
+
+                    <hr />
+                    <button class="btn btn-success btn-md" formmethod="get"
+                            asp-controller="AssignedSections"
+                            asp-action="AssignedSections"
+                            asp-route-Year="Year"
+                            asp-route-ddlClass="ddlClass">
+                        <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+                        Search
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+    <link rel="stylesheet" href="~/lib/DataTable/DataTables-1.10.18/css/jquery.dataTables.css" />
+    <script src="~/lib/DataTable/DataTables-1.10.18/js/jquery.dataTables.js"></script>
+
+    <script type="text/javascript">
+                    //Table converted into DataTable
+                    $(document).ready(function () {
+                      
+                        $('#addYear').datepicker({
+                            format: "yyyy",
+                            viewMode: "years",
+                            minViewMode: "years",
+                            autoclose: true
+                        });
+                        $('#editYear').datepicker({
+                            format: "yyyy",
+                            viewMode: "years",
+                            minViewMode: "years",
+                            autoclose: true
+                        });
+                        
+                        $('#fltrYear').datepicker({
+                            format: "yyyy",
+                            viewMode: "years",
+                            minViewMode: "years",
+                            autoclose: true
+                        });
+        
+                    });
+
+                    //Displaying data for Updating
+                    var flag = false;
+                    $("tr td #btnEdit").on('click', function () {
+                        if (flag == false) {
+                            var currentRow = $(this).closest('tr');
+                            $(currentRow).children('#year').children('p').hide();
+                            $(currentRow).children('#sec').children('p').hide();
+                            $(currentRow).children('#classname').children('p').hide();
+                            $(currentRow).children('#buttons').children('.btnEditDelete').hide();
+
+                            $(currentRow).children('#year').children('input').show();
+                            $(currentRow).children('#sec').children('input').show();
+                            $(currentRow).children('#classname').children('#editddlClass').show();
+                            $(currentRow).children('#buttons').children('.btnUpdateCancel').show();
+
+                            $(currentRow).children('#year').children('#editYear').val($(this).data('year'));
+                            $(currentRow).children('#sec').children('#editSection').val($(this).data('name'));
+                            $(currentRow).children('#classname').children('#editddlClass').val($(this).data('classid'));
+                            flag = true;
+                        } else closeInputFields(currentRow);
+
+                    });
+                    //Discard updating data.
+                    $("tr td #btnEditCancel").on('click', function () {
+                            var currentRow = $(this).closest('tr');
+                            $(currentRow).children('#year').children('input').hide();
+                            $(currentRow).children('#sec').children('input').hide();
+                            $(currentRow).children('#classname').children('#editddlClass').hide();
+                            $(currentRow).children('#buttons').children('.btnUpdateCancel').hide();
+
+                            $(currentRow).children('#year').children('p').show();
+                            $(currentRow).children('#sec').children('p').show();
+                            $(currentRow).children('#classname').children('p').show();
+                            $(currentRow).children('#buttons').children('.btnEditDelete').show();
+                            flag = false;
+                    });
+
+                    $("tr td #btnUpdate").on('click', function () {
+                        var currentRow = $(this).closest('tr');
+                        var editId = $(this).data('id');
+                        var editYear = $(currentRow).children('#year').children('#editYear').val();
+                        var editSectionName = $(currentRow).children('#sec').children('#editSection').val();
+                        var editClassId = $(currentRow).children('#classname').children('#editddlClass').val();
+
+                        //Sending ajax request to Add method of AssignedSections Controller.
+                         $.ajax({
+                            type: 'POST',
+                             data: { 'editId': editId, 'editYear': editYear, 'editSectionName': editSectionName, 'editClassId': editClassId},
+                            url: '@Url.Action("Edit", "AssignedSections", new { Area = "Institution" })',
+                            traditional: true,
+                            success: function (message) {
+                            location.reload();
+                            }
+                        });
+
+
+                    });
+                    function closeInputFields(test) {
+
+                    }
+
+                    //Hidden input fileds will be display for adding new data.
+                    $("#addsection").on('click', function () {
+                        $("#rowinput").show();
+                    });
+
+                    //Saving new data
+                    $("#btnAddSave").on('click', function () {
+                        var addYear = $("#addYear").val();
+                        var addSectionName = $("#addSection").val();
+                        var addClassId = $("#addDdlClass").val();
+                         //Sending ajax request to Add method of AssignedSections Controller.
+                         $.ajax({
+                            type: 'POST',
+                             data: { 'addYear': addYear, 'addSectionName': addSectionName, 'addClassId': addClassId },
+                            url: '@Url.Action("Add", "AssignedSections", new { Area = "Institution" })',
+                            traditional: true,
+                            success: function (message) {
+                            location.reload();
+                            }
+                        });
+                    });
+                    //Displayed input fileds will be hide for adding new data.
+                    $("#btnAddCancel").on('click', function () {
+                        $("#rowinput").hide();
+                    });
+
+                    //Delete existing data
+                    $("tr td #btnDelete").on('click', function () {
+                        var delId = $(this).data('id');
+                        if (confirm("Are u sure you want to delete current record?")) {
+                        $.ajax({
+                            type: 'POST',
+                            data: { 'delId': delId },
+                            url: '@Url.Action("Delete", "AssignedSections", new { Area = "Institution" })',
+                            traditional: true,
+                            success: function (message) {
+                            location.reload();
+                            }
+                        });
+                        } else { }
+
+        });
+
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

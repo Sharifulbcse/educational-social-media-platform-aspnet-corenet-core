@@ -1,0 +1,193 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Models.IndexLoginVM
+    <div class="container">
+        <div class="center-block">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h1 class="panel-title text-center">Sign Up</h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <h5 class="text-center">@Model.InstitutionName</h5>
+                            <img src="~/@Html.Raw(Model.Logo)" class="center-block" width="120" />
+
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <h2>Welcome To OurEdu</h2>
+                        </div>
+                        <br />
+                        <div class="form-inline text-center" @ViewBag.steps>
+                            <label><span class="label label-default" @ViewBag.active1>Step 1</span></label>
+                            <label><span class="label label-default" @ViewBag.active2>Step 2</span></label>
+                            <label><span class="label label-default" @ViewBag.active3>Step 3</span></label>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-right: 0px; margin-left:0px;">
+                        <section @ViewBag.section1>
+                            <form method="post">
+                                <div class="text-center">
+                                    <label>Email verification</label>
+                                </div>
+                                <hr style="margin-top: 2px;">
+
+                                <div class="form-group input-group-lg">
+                                    <h4>Enter Email:</h4>
+                                    <input type="email" name="email" class="form-control" placeholder="E-mail Address" required style="color: forestgreen;">
+                                </div>
+                                <br />
+                                @Html.Raw(ViewData["result"])
+                                <button id="Next" type="submit" class="btn btn-default pull-right"
+                                        asp-controller="Home"
+                                        asp-action="EmailVerification"
+                                        asp-route-email="email">
+                                    Next..
+                                </button>
+                                <br>
+                                <br>
+                            </form>
+                        </section>
+                        <section id="Step2" @ViewBag.section2>
+                            <form method="post">
+                                <div class="text-center">
+                                    <label>Verify your Email</label>
+                                </div>
+                                <hr style="margin-top: 2px;">
+                                <div class="form-group input-group-lg">
+                                    <h4>Enter verification code:</h4>
+                                    <input type="text" name="code" class="form-control text-center" placeholder="Verification Code" required style="color: forestgreen;">
+                                </div>
+                                <div class="form-group">
+                                    <p>We've send you a verification code into your given mail address. Please confirm with your verification code to verify your E-mail.</p>
+                                </div>
+                                <br />
+                                @Html.Raw(ViewData["result"])
+                                <button type="submit" class="btn btn-default pull-right"
+                                        asp-controller="Home"
+                                        asp-action="CheckingVerification"
+                                        asp-route-code="code">
+                                    Confirm
+                                </button>
+                                <br>
+                                <br>
+                            </form>
+                        </section>
+                        <section id="Step3" @ViewBag.section3>
+                            <form method="post">
+                                <div class="text-center">
+                                    <label>Registration Form</label>
+                                    <hr style="margin-top: 2px;">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Verified Email</label>
+                                        <input type="email" name="vmail" class="form-control" value="@ViewBag.mail" readonly style="background-color: transparent; color: forestgreen;">
+                                        <br />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>First Name</label>
+                                        <input type="text" name="fname" class="form-control" required style="background-color: transparent; color: forestgreen;">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Last Name</label>
+                                        <input type="text" name="lname" class="form-control" style="background-color: transparent; color: forestgreen;">
+                                        <br />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Password</label>
+                                        <input type="password" id="pswrd1" name="pswrd1" class="form-control" required style="background-color: transparent; color: forestgreen;">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Confirm Password</label>
+                                        <input type="password" id="pswrd2" name="pswrd2" class="form-control" required style="background-color: transparent; color: forestgreen;">
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="text-danger" id="passResult"></label>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label>Date of Birth</label>
+                                        <input type="text" name="DOB" id="dobdatepicker" class="form-control" required style="background-color: transparent; color: forestgreen;">
+                                        <br />
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label>Phone Number</label>
+                                        <input type="text" name="phone" class="form-control" required style="background-color: transparent; color: forestgreen;">
+                                        <br />
+                                    </div>
+                                    <div class="col-md-12">                                       
+
+                                        <label>Select Gender: </label>
+                                        <br />
+                                        <label class="col-md-4">
+                                            <input name="radioResult" type="radio" value="1" required> Male
+                                        </label>
+                                        <label class="col-md-4">
+                                            <input name="radioResult" type="radio" value="2" required> Female
+                                        </label>
+                                        <label class="col-md-4">
+                                            <input name="radioResult" type="radio" value="3" required> Others
+                                        </label>
+                                        
+                                    </div>
+                                </div>
+                                <br>
+                                @Html.Raw(ViewData["result"])
+                                <button type="submit" class="btn btn-default pull-right" style="width:150px"
+                                        asp-controller="Home"
+                                        asp-action="Registration"
+                                        asp-route-vmail="vmail"
+                                        asp-route-fname="fname"
+                                        asp-route-lname="lname"
+                                        asp-route-pswrd1="pswrd1"
+                                        asp-route-pswrd2="pswrd2"
+                                        asp-route-DOB="DOB"
+                                        asp-route-phone="phone"
+                                        asp-route-radioResult="radioResult">
+                                    Finish
+                                </button>
+                                <br>
+                                <br>
+                            </form>
+                        </section>
+                        <section @ViewBag.section4>
+                            <h3 class="text-center text-success">Registration Completed.</h3>
+                            <h4 class="text-center text-success">Thanks for being a member of OurEdu.</h4>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+       
+
+    @section Scripts
+        {
+        <script type="text/javascript">
+
+            $("#dobdatepicker").datepicker({
+                format: "dd/MM/yyyy",
+                autoclose: true
+            });
+
+            $("#pswrd2").change(function () {
+                var p1 = $("#pswrd1").val();
+                var p2 = $("#pswrd2").val();
+                if (p1 === p2) {
+                    $("#passResult").text("");
+                }
+                else {
+                    $("#passResult").text("Password is not matched.");
+                    $("#pswrd2").val("");
+                }
+            });
+        </script>
+    }
+    
+}

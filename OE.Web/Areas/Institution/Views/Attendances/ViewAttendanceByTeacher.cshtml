@@ -1,0 +1,88 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexViewAttendanceByTeacherVM
+    <ol class="breadcrumb pull-left" style="background-color:transparent">
+        <li><a asp-controller="Attendances" asp-action="ViewAttendanceCourses" asp-area="Institution">Courses Index</a></li>
+        <li class="active">Student Attendance List</li>
+    </ol>
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+    <br />
+    <br />
+    <h1 class="page-title">   @ViewData["Title"]</h1>
+    <br />    
+    <div class="row">
+        <div class="col-md-4">Class: <b>@Model.ClassName</b> </div>
+        <div class="col-md-4">Course: <b>@Model.AssignedCourseName</b></div>
+        <div class="col-md-4">Section: <b>@Model.AssignedSectionName</b></div>
+    </div>
+    <br />
+  
+
+    <div class="col-md-12">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th width="50px"> #SN </th>
+                    <th width="120px"> Id</th>
+                    <th> Name</th>
+                    <th width="50px"> Total Classes</th>
+                    <th width="50px"> Total Presents</th>
+                    <th width="50px"> Total Absents</th>
+                    <th width="150px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int i = 1;}
+                @foreach (var item in Model._Atendances)
+                {
+                    <tr>
+                        <td class="showDetails pointer"> @i</td>
+                        <td class="showDetails pointer">@item.StudentId</td>
+                        <td class="showDetails pointer">
+                            <img class="img-circle" src="~/@item.IP300X200" alt="StudentPhoto" style="width:60px; height:60px" />
+                            <label><i>@item.StudentName</i></label>
+                        </td>
+                        <td class="showDetails pointer text-center">@item.TotalClasses</td>
+                        <td class="showDetails pointer text-center">@item.TotalPresents</td>
+                        <td class="showDetails pointer text-center">@item.TotalAbsents</td>
+                        <td class="showDetails pointer text-center">
+
+                            <a class="btn btn-default btn-md "
+                               asp-controller="Attendances"
+                               asp-action="AttendanceDetails"
+                               asp-area="Institution"
+                               asp-route-StudentId="@item.StudentId"
+                               asp-route-EmployeeId="@item.EmployeeId"
+                               asp-route-SelectedYear="@Model.SelectedYear"
+                               asp-route-ClassId="@item.ClassId"
+                               asp-route-AssignedCourseId="@item.AssignedCourseId"
+                               asp-route-AssignedSectionId="@item.AssignedSectionId">
+                                <span class="glyphicon glyphicon-paperclip" style="vertical-align:middle; margin-top: -5px"></span>
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- #region "All Scripts" -->
+    @section Scripts
+     {
+
+        <script type="text/javascript">
+        </script>
+    }
+    <!-- #endregion  "All Scripts"-->
+   
+    
+}

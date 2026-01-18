@@ -1,0 +1,4 @@
+﻿OE.Web> Hosting environment: Development
+OE.Web> Content root path: D:\zz_WorkingOurEdu2\02_OurEduMedia\OurEduMedia_160619_A\OurEduMedia\OE.Web
+OE.Web> Now listening on: http://localhost:30264
+OE.Web> Application started. Press Ctrl+C to shut down.

@@ -1,0 +1,394 @@
+﻿
+@model OE.Web.Areas.Institution.Models.IndexGradeTypesVM
+
+<div class="informationArea">
+    <span class="label label-info "> Institution: @Model.InstitutionName </span>
+</div>
+<h1 class="page-title">All GradeTypes</h1>
+<br />
+<div class="row">
+    <div class="col-12 col-sm-6 col-md-6">
+        <button class="btn btn-success btn-sm " id="btnAddGradeTypes" name="btnAddGradeTypes" data-toggle="modal" data-target="#mdlAddGradeTypes">
+            <span class="glyphicon glyphicon-plus" style="vertical-align:middle;margin-top: -5px"></span>
+            New
+        </button>
+        <label>
+            <a tabindex="0" data-toggle="popover" data-trigger="focus" data-container="body" title="Tip:Grade Types" data-content="Grade Types means all grades like A+,A,B etc">
+                <span class="glyphicon glyphicon-info-sign" style="top:5px; font-size:larger"></span>
+            </a>
+        </label>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3 pull-right">
+        <form id="filterSearch" asp-area="Institution" asp-controller="GradeTypes" asp-action="GradeTypes" asp-route-classId="classId" method="get">
+            <select class="form-control" id="classId" name="classId" asp-items="@(new SelectList(ViewBag.ddlClass, "Id","Name", Model.SelectedClassId))" onchange="this.form.submit();">
+                <option value="0">All Classes</option>
+            </select>
+        </form>
+    </div>
+</div>
+
+<h4 class="text-danger">@ViewBag.msg</h4>
+<br />
+<br />
+@if (Model._gradeTypesVM.Count() == 0)
+{
+    <div class="well"><b>No Record has been added yet.</b></div>
+}
+
+else
+{
+    <table class="table table-bordered table-hover" id="tblGetGradeTypes">
+        <thead>
+            <tr>
+                <th> Grade </th>
+                <th> Class </th>
+                <th> Start Mark </th>
+                <th> End Mark </th>
+                <th> Point </th>
+                <th> Out Of </th>
+                <th></th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var data in Model._gradeTypesVM)
+            {
+                <tr>
+                    <td class="showDetails pointer"><b>@data.Grade</b></td>
+                    <td class="showDetails pointer">@data.ClassName</td>
+                    <td class="showDetails pointer">@data.StartMark</td>
+                    <td class="showDetails pointer">@data.EndMark</td>
+                    <td class="showDetails pointer">@data.GPA</td>
+                    <td class="showDetails pointer">@data.GPAOutOf</td>
+
+                    <td>
+                        <button class="btn btn-primary btn-sm" id="btnEdit" name="btnEdit" data-toggle="modal" data-target="#modalEdit"
+                                data-id="@data.Id"
+                                data-classid="@data.ClassId"
+                                data-StartMark="@data.StartMark"
+                                data-EndMark="@data.EndMark"
+                                data-Grade="@data.Grade"
+                                data-Point="@data.GPA"
+                                data-OutOf="@data.GPAOutOf">
+                            <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                            Edit
+                        </button>
+
+                        <button class="btn btn-danger btn-sm " id="btnDeleteGradeTypes" data-toggle="modal" data-target="#modalDelete" data-id="@data.Id">
+                            <span class="glyphicon glyphicon-trash" style="vertical-align:middle;margin-top: -5px"></span>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+<!-- #region "All Modals" -->
+<div id="mdlAddGradeTypes" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                <h3>Add Grade Type</h3>
+
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" id="addGradeTypes">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>Class</label>
+                            <select class="form-control" id="ddlAddClass" name="gradeTypesVM.ClassId" asp-items="@(new SelectList(ViewBag.ddlClass, "Id","Name"))">
+                                <option value="0">Select Class</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>Grade Name</label>
+                            <input type="text" name="gradeTypesVM.Grade" id="AddGrade" required class="form-control">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label>Start Mark</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">From</span>
+                                <input type="number" name="gradeTypesVM.StartMark" id="addStartMark" required class="form-control">
+
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <label>End Mark</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">To</span>
+                                <input type="number" name="gradeTypesVM.EndMark" id="addEndMark" required class="form-control">
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">Point</span>
+                                <input type="number" name="gradeTypesVM.GPA" id="addPoint" required class="form-control">
+
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">Out Of</span>
+                                <input type="number" name="gradeTypesVM.GPAOutOf" id="addOutOf" required class="form-control">
+
+                            </div>
+                        </div>
+                        <a tabindex="0" data-toggle="popover" data-trigger="focus" data-container="body" title="Tip: Point Range" data-content="Give point range. eg: 5 out of 5">
+                            <span class="glyphicon glyphicon-info-sign" style="top:5px; font-size:larger"></span>
+                        </a>
+                    </div>
+                    <hr />
+                    <button class="btn btn-success btn-md" id="btnSaveNewGradeTypes">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="modalEdit" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Class</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <input type="hidden" name="editId" id="editId">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>End Mark</label>
+                            <select class="form-control" id="ddlEditClass" name="ddlEditClass" asp-items="@(new SelectList(ViewBag.ddlClass, "Id","Name"))">
+                                <option value="0">Select Class</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>Grade Name</label>
+                            <input type="text" name="editGrade" id="editGrade" required class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label>Start Mark</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">From</span>
+                                <input type="number" name="editStartMark" id="editStartMark" required class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <label>End Mark</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">To</span>
+                                <input type="number" name="editEndMark" id="editEndMark" required class="form-control">
+                            </div>
+                        </div>
+
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">Point</span>
+                                <input type="number" name="editPoint" id="editPoint" required class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">Out Of</span>
+                                <input type="number" name="editOutOf" id="editOutOf" required class="form-control">
+                            </div>
+                        </div>
+                        <a tabindex="0" data-toggle="popover" data-trigger="focus" data-container="body" title="Tip: Point Range" data-content="Give point range. eg: 5 out of 5">
+                            <span class="glyphicon glyphicon-info-sign" style="top:5px; font-size:larger"></span>
+                        </a>
+                    </div>
+                    <hr />
+                    <button class=" btn btn-success btn-md" formmethod="post"
+                            asp-controller="GradeTypes"
+                            asp-action="Edit"
+                            asp-route-editId="editId"
+                            asp-route-editStartMark="editStartMark"
+                            asp-route-editEndMark="editEndMark"
+                            asp-route-editGrade="editGrade"
+                            asp-route-editPoint="editPoint"
+                            asp-route-editOutOf="editOutOf"
+                            asp-route-ddlEditClass="ddlEditClass">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalDelete" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <form enctype="multipart/form-data">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete Grade</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p><h3>Are you sure you want to delete this?</h3></p>
+
+                </div>
+                <div class="modal-footer">                   
+                    <input type="hidden" name="gradeTypesId" id="gradeTypesId">
+                    <button class="btn btn-md btn-success" id="btnDeleteGradeTypesId">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Yes
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        No
+                    </button>                   
+                </div>                
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+<div id="modalMessage" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Message</h4>
+            </div>
+            <div class="modal-body">
+                <p><h3 id="txtMessage" style="color:red"></h3></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger btn-md " data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                    Ok
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- #endregion  "All Modals"-->
+<!-- #region "All Scripts" -->
+
+@section Scripts{
+
+    <script type="text/javascript">
+        //[NOTE: Tip]
+        $('[data-toggle="popover"]').popover({
+            trigger: 'focus'
+        })
+        $('tr td #btnEdit').on('click', function () {
+            $("#editId").val($(this).data("id"));
+            $("#editStartMark").val($(this).data("startmark"));
+            $("#editEndMark").val($(this).data("endmark"));
+            $("#editGrade").val($(this).data("grade"));
+            $("#editPoint").val($(this).data("point"));
+            $("#editOutOf").val($(this).data("outof"));
+            $("#ddlEditClass").val($(this).data("classid"));
+        });
+        
+        $('#tblGetGradeTypes tr td #btnDeleteGradeTypes').on('click', function () {
+            $("#gradeTypesId").val($(this).data("id"));
+            });
+
+
+        $("#btnDeleteGradeTypesId").on('click', function (e) {
+            e.preventDefault();
+                var gradeTypesId = $('input#gradeTypesId').val();
+            $.ajax({
+                type: 'POST',
+                data: { gradeTypesId: gradeTypesId },
+                dataType: 'json',
+                cache: false,
+               url: '@Url.Action("DeleteGradeTypes", "GradeTypes", new { Area = "Institution" })',
+               success:function (data) {
+                        if (data.success == true) {
+                            location.reload();
+                        }
+                        if (data.success == false) {
+                            $('#txtMessage').text(data.message);
+                            $('#modalMessage').modal('show');
+                        }
+                    },
+                error: function (data) {
+
+                },
+                complete: function (data) {
+
+                }   
+
+             });
+        });
+        
+        $('[data-toggle="popover"]').popover({
+            trigger: 'focus'
+        })
+
+
+        $("#btnSaveNewGradeTypes").on('click', function (e) {
+            e.preventDefault();
+            var formData = new FormData($("#addGradeTypes")[0]);
+             $.ajax({
+               type: 'POST',
+               data: formData,
+               contentType: false,
+               processData: false,
+
+               url: '@Url.Action("InsertGradeTypes", "GradeTypes", new { Area = "Institution" })',
+                 success: function (response) {
+                     location.reload();
+                 },
+                 error: function (response) {
+                     alert('error: ' + response.message);
+                 },
+                 complete: function () {
+                 }
+
+                });
+        });
+
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->
