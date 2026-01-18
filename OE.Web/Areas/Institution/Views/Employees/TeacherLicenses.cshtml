@@ -1,0 +1,325 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexTeacherLicensesVM
+
+<h1 class="page-title">Teacher Licenses</h1>
+<br />
+<button class="btn btn-success btn-sm " id="btnAddOELicenses" name="btnAddOELicenses" data-toggle="modal" data-target="#mdlAddOELicenses">
+    <span class="glyphicon glyphicon-plus" style="vertical-align:middle;margin-top: -5px"></span>
+    New
+</button>
+
+<br />
+<br />
+
+@if (Model.OE_UserAuthenticationsListVM.Count() == 0)
+{
+    <div class="well"><b>No Teacher license has been created yet.</b></div>
+}
+else
+{
+    <div class="table-responsive">       
+        <table class="table table-bordered table-hover" id="tblGetTecherLicenses">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>OurEdu Id</th>
+                    <th>Type </th>
+                    <th>Is Active</th>
+                    <th>Action </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var data in Model.OE_UserAuthenticationsListVM)
+                {
+                    <tr>
+                        <td class="showDetails pointer">
+                            @if (data.GenderId == 1)
+                            {
+                                <img id="IP300X200" src=@(data.UserIP300X200 == null?"~/DataDictionary/images/defaultImages/GenderMale.png": "~/"+data.UserIP300X200) asp-append-version="true" style="height:80px;width:80px;" />
+                            }
+                            else if (data.GenderId == 2)
+                            {
+                                <img id="IP300X200" src=@(data.UserIP300X200 == null?"~/DataDictionary/images/defaultImages/GenderFemale.png": "~/"+data.UserIP300X200) asp-append-version="true" style="height:80px;width:80px;" />
+                            }
+                            else if (data.GenderId == 3)
+                            {
+                                <img id="IP300X200" src=@(data.UserIP300X200 == null?"~/DataDictionary/images/defaultImages/GenderThird.png": "~/"+data.UserIP300X200) asp-append-version="true" style="height:80px;width:80px;" />
+                            }
+                            <br />
+                            @data.EmployeeName
+                        </td>
+                        <td class="showDetails pointer">@data.UserLoginId</td>
+                        <td class="showDetails pointer">@data.ActorName</td>
+                        <td class="showDetails pointer">
+                            <input type="checkbox" disabled id="IsActive" name="IsActive" value="@data.IsActive" @(data.IsActive == true ? "checked=\"checked\"" : "") />
+
+                        </td>
+
+                        <td>
+                            <button class="btn btn-primary btn-sm" id="btnEditLicense" name="btnEditLicense" data-toggle="modal" data-target="#mdlEditOELicenses"
+                                    data-id="@data.Id"
+                                    data-actorid="@data.ActorId"
+                                    data-userloginid="@data.UserLoginId"
+                                    data-isactive="@data.IsActive">
+                                <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                                Edit
+                            </button>
+                           <button class="btn btn-danger btn-sm " id="btnDeleteTeacherLicense" data-toggle="modal" data-target="#modalDelete" data-id="@data.Id">
+                                <span class="glyphicon glyphicon-trash" style="vertical-align:middle;margin-top: -5px"></span>
+                                Delete
+                            </button>
+
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+}
+
+<!-- #region "All Modals" -->
+<div id="mdlAddOELicenses" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3>Add Teacher License</h3>
+            </div>
+            <div class="modal-body">
+                <label>Enter OurEdu LoginId:</label>
+                <input type="email" name="UserLoginId" id="addUserLoginId" required class="form-control">
+                <label>Actor</label>
+                <select class="form-control" id="addActorId" name="ActorId" asp-for-id="Id" asp-items="@(new SelectList (ViewBag.ddlActors, "Id","Name"))">
+                    <option value="0">Select Actors</option>
+                </select>
+                <label>
+                    <input type="checkbox" name="IsActive" id="addIsActive">
+                    Is Active
+                </label>
+
+                <hr />
+                <button class="btn btn-success btn-md" id="btnAddSave">
+                    <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                    Save
+                </button>
+                <button class="btn btn-danger btn-md " data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="mdlEditOELicenses" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        Modal content
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3>Edit Teacher License</h3>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" name="authenticId" id="authenticId" />
+                <label>Enter OurEdu LoginId:</label>
+                <input type="email" name="UserLoginId" id="editUserEmail" required class="form-control">
+                <label>Actor</label>
+                <select class="form-control" id="editActorId" name="ActorId" asp-for-id="Id" asp-items="@(new SelectList (ViewBag.ddlActors, "Id","Name"))">
+                    <option value="0">Select Actors</option>
+                </select>
+                <label>
+                    <input type="checkbox" name="IsActive" id="editIsActive">
+                    Is Active
+                </label>
+
+                <hr />
+                <button class="btn btn-success btn-md" id="btnEditSave">
+                    <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                    Save
+                </button>
+                <button class="btn btn-danger btn-md " data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                    Cancel
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalDelete" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            
+            <form enctype="multipart/form-data">
+               
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Remove authentication</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p><h3>Are you sure you want to remove this?</h3></p>
+
+                </div>
+                <div class="modal-footer">                   
+                    <input type="hidden" name="Id" id="techerLicensesId">
+                    <button class="btn btn-md btn-success" id="btnDeleteTecherLicenseId">
+                        
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Yes
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        No
+                    </button>                
+                </div>               
+            </form>           
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="MessageBox" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-center" id="exampleModalLongTitle">Message</h3>
+            </div>
+            <div class="modal-body text-center text-danger">
+
+                <h3 id="msg"></h3>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion  "All Modals"-->
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+
+    <script type="text/javascript">
+
+        //[NOTE:Saving new data]
+        $("#btnAddSave").on('click', function () {
+            var userEmail = $("#addUserLoginId").val();
+            var addActorId = $("#addActorId").val();
+            var addIsActive = null;
+            if ($("#addIsActive").prop('checked') == true) {
+                addIsActive = true;
+            }
+            else {
+                addIsActive = false;
+            }
+
+            $.ajax({
+            type: 'POST',
+                data: { 'UserLoginId': userEmail, 'ActorId': addActorId, 'IsActive': addIsActive },
+            url: '@Url.Action("AddTeacherLicenses", "Employees", new { Area = "Institution" })',
+                success: function (data) {
+                    if (data != null) {
+                        if (data.errorMessage == null) {
+                            location.reload();
+                        } else {
+                            $('#msg').text(data.errorMessage);
+                            $('#MessageBox').modal();
+                        }
+                    }
+                }
+            });
+
+        });
+
+        //[NOTE:JS for auto load values into edit form]
+        $('tr td #btnEditLicense').on('click', function () {
+            $("#mdlEditOELicenses #authenticId").val($(this).data("id"));
+            $("#mdlEditOELicenses #editActorId").val($(this).data("actorid"));
+
+            $("#mdlEditOELicenses #editUserEmail").val($(this).data("userloginid"));
+
+            // [NOTE: Checked or Uncheck on Is Active of Edit form]
+            var t = $(this).data("isactive");
+            if (t == "True") {
+                $('#editIsActive').prop('checked', true);
+            } else {
+                $('#editIsActive').prop('checked', false);
+            }
+        });
+
+         //Updating data
+        $("#btnEditSave").on('click', function () {
+                var authenticId = $("#authenticId").val();
+            var editUserEmail = $("#editUserEmail").val();
+            var editActorId = $("#editActorId").val();
+                var editIsActive = null;
+                if ($("#editIsActive").prop('checked') == true) {
+                    editIsActive = true;
+                } else editIsActive = false;
+                $.ajax({
+                type: 'POST',
+                    data: { 'Id': authenticId, 'ActorId': editActorId, 'UserLoginId': editUserEmail, 'IsActive': editIsActive },
+                url: '@Url.Action("UpdateTeacherLicense", "Employees", new { Area = "Institution" })',
+                        success: function (data) {
+                        if (data != null) {
+                            if (data.errorMessage == null) {
+                                location.reload();
+                            } else {
+                                $('#msg').text(data.errorMessage);
+                                $('#MessageBox').modal();
+                            }
+                        }
+                    }
+            });
+
+        });
+         
+        $('#tblGetTecherLicenses tr td #btnDeleteTeacherLicense').on('click', function () {
+            $("#techerLicensesId").val($(this).data("id"));
+            });
+
+
+
+        $("#btnDeleteTecherLicenseId").on('click', function (e) {
+            e.preventDefault();
+                var techerLicensesId = $('input#techerLicensesId').val();
+            $.ajax({
+                type: 'POST',
+                data: { techerLicensesId: techerLicensesId },
+                dataType: 'json',
+                cache: false,
+               url: '@Url.Action("DeleteTeacherLicenses", "Employees", new { Area = "Institution" })',
+                success:  function (data) {
+                        if (data.success == true) {
+                            location.reload();
+                        }
+                        if (data.success == false) {
+                            $('#txtMessage').text(data.message);
+                            $('#MessageBox').modal('show');
+                        }
+                    },
+                error: function (data) {
+
+                },
+                complete: function (data) {
+
+                }
+             });
+        });
+         
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

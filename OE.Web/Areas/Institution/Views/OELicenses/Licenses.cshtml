@@ -1,0 +1,241 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexOELicensesVM
+
+<h1 class="page-title">Institutions License</h1>
+
+<br />
+<button class="btn btn-success btn-sm " id="btnAddLicense" name="btnAddLicense" data-toggle="modal" data-target="#mdlAddLicense">
+    <span class="glyphicon glyphicon-plus" style="vertical-align:middle;margin-top: -5px"></span>
+    New
+</button>
+
+<br />
+<br />
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Institution Name</th>
+                <th>License Number</th>
+                <th>License Start Date</th>
+                <th>License End Date</th>
+                <th>Is Active</th>
+                <th>Agreement</th>
+
+
+                <th>Action </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var data in Model._Licenses)
+            {
+                <tr>
+                    <td class="showDetails pointer">@data.InstitutionName</td>
+                    <td class="showDetails pointer">@data.LicenseNumber</td>
+                    <td class="showDetails pointer">@String.Format("{0:dd/MMM/yyyy}", data.StartDate)</td>
+                    <td class="showDetails pointer">@String.Format("{0:dd/MMM/yyyy}", data.EndDate)</td>
+
+
+
+                    <td class="showDetails pointer">
+                        <input type="checkbox" disabled id="IsActive" name="IsActive" value="@data.IsActive" @(data.IsActive == true ? "checked=\"checked\"" : "") />
+
+                    </td>
+
+                    @{
+                        if (data.DP != null)
+                        {
+                            <td class="showDetails pointer"><a href="~/@Html.Raw(data.DP)" target="_blank">File()</a></td>
+                        }
+                        else
+                        {
+                            <td class="showDetails pointer"> </td>
+                        }
+                    }
+
+                    <td>
+                        
+                        <button class="btn btn-primary btn-sm" id="btnEditLicense" name="btnEditLicense" data-toggle="modal" data-target="#mdlEditLicense"
+                                data-id="@data.Id"
+                                data-isactive="@data.IsActive"
+                                data-startdate="@data.StartDate"
+                                data-enddate="@data.EndDate"
+                                data-userid="@data.UserId">
+                           
+                            <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                            Edit
+                        </button>
+
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+<!-- #region "All Modals" -->
+<div id="mdlAddLicense" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="myFunction()">&times;</button>
+                <h3>Add License</h3>
+            </div>
+            <div class="modal-body">
+
+                <form enctype="multipart/form-data">
+                    <label>Institution Name:</label>
+                    @Html.DropDownList("ddlAddInstitutionId", Model._Institutions, "Search for Institution", new { @class = "form-control selectpicker" })
+
+                    <label>Start Date</label>
+                    <input type="text" name="addStartDate" id="addStartDate" required class="form-control">
+                    <br />
+
+                    <label>Expired Date</label>
+                    <input type="text" name="addEndDate" id="addEndDate" required class="form-control">
+
+                    <br />
+                    <label>
+                        <input type="checkbox" name="addIsActive" id="addIsActive" value="true" checked="checked">
+                        Is Active
+                    </label>
+                    <br />
+                    <br />
+                    <label>OurEdu Id for Admin:</label>
+                    @Html.DropDownList("ddlAddUserId", Model._Users, "Search for User", new { @class = "form-control", data_show_subtext = "true", data_live_search = "true" })
+
+                    <label>Upload Agreement</label>
+                    <input type="file" name="fleAddDP" id="fleAddDP" class="form-control">
+
+
+                    <hr />
+
+                    <button class="btn btn-success btn-md"
+                            formmethod="post"
+                            asp-area="Institution"
+                            asp-controller="OELicenses"
+                            asp-action="AddLicense"
+                            asp-route-ddlAddInstitutionId="ddlAddInstitutionId"
+                            asp-route-addEndDate="addEndDate"
+                            asp-route-addStartDate="addStartDate"
+                            asp-route-addIsActive="addIsActive"
+                            asp-route-ddlAddUserId="ddlAddUserId"
+                            asp-route-fleAddDP="fleAddDP">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal" onclick="myFunction()">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="mdlEditLicense" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Renew License</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    
+                    <input type="hidden" id="editLicenseId" name="Licenses.Id" class="form-control">
+                    <label>Start Date</label>
+                    <input type="text" id="editStartDate" name="Licenses.StartDate" class="form-control">
+                    <label>End Date</label>
+                    <input type="text" id="editEndDate" name="Licenses.EndDate" class="form-control">
+                    <label>OurEdu Id for Admin:</label>
+                    @Html.DropDownList("ddlEditUserId", Model._Users, "Search for User", new { @class = "form-control", data_show_subtext = "true", data_live_search = "true" })
+
+                    <br />
+                    <label>
+                        <input type="checkbox" id="editIsActive" name="Licenses.IsActive" value="true" checked />
+
+                        Is Active
+                    </label>
+
+                    <br />
+
+                    <hr />
+                    
+                    <button class="btn btn-success btn-md" formmethod="post"
+                            asp-area="Institution"
+                            asp-controller="OELicenses"
+                            asp-action="EditLicense">
+                       
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- #endregion  "All Modals"-->
+<!-- #region "All Scripts" -->
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#addStartDate').datepicker({ format: "dd/MM/yyyy", autoclose: true });
+            $('#addEndDate').datepicker({ format: "dd/MM/yyyy", autoclose: true });
+
+            $('#editStartDate').datepicker({ format: "dd/MM/yyyy", autoclose: true });
+            $('#editEndDate').datepicker({ format: "dd/MM/yyyy", autoclose: true });
+        });
+
+        //[NOTE:add section]
+        function myFunction() {
+            document.getElementById("frmAddLicense").reset();
+            ClrAddPreview();
+        }
+        //[NOTE:edit section]
+        $('tr td #btnEditLicense').on('click', function () {
+            $("#mdlEditLicense #editLicenseId").val($(this).data("id"));
+
+
+            $("#mdlEditLicense #editStartDate").val($(this).data("startdate"));
+            $("#mdlEditLicense #editEndDate").val($(this).data("enddate"));
+
+
+            $("#mdlEditLicense #ddlEditUserId").val($(this).data("userid"));
+            // [NOTE: Checked or Uncheck on Is Active of Edit form]
+            var ValueOfIsActive = $(this).data("isactive");
+
+            if (ValueOfIsActive == "True") {
+                $('#editIsActive').prop('checked', true);
+            } else {
+                $('#editIsActive').prop('checked', false);
+            }
+
+        });
+
+
+
+    </script>
+}
+<!-- #endregion  "All Scripts"-->

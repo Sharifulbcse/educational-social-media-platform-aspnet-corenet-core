@@ -1,0 +1,131 @@
+﻿
+@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexEmployeeVM
+    <h1 class="page-title">Employee List</h1>
+    @if (ViewBag.errorMsg != null)
+    {
+        <label id="errorMsg" class="text-danger hidden">@ViewBag.errorMsg </label>
+        <input type="hidden" id="selectedEmployeeId" value="@ViewBag.empId">
+
+    }
+
+    <table class="table table-bordered table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>SN</th>
+                <th>Employee</th>
+                <th>Details</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{var sn = 0; }
+            @foreach (var data in Model.employeelist)
+            {
+                sn = (sn + 1);
+                <tr>
+                    <td><b>@sn</b></td>
+                    <td class="showDetails pointer text-center">
+                        @if (data.GenderId == 1)
+                        {
+                            <img id="IP300X200" src=@((String.IsNullOrEmpty(data.IP300X200)) ? "~/DataDictionary/images/defaultImages/GenderMale.png" : "~/" + data.IP300X200) asp-append-version="true" style="height:120px;width:120px;" />
+                        }
+                        else if (data.GenderId == 2)
+                        {
+                            <img id="IP300X200" src=@((String.IsNullOrEmpty(data.IP300X200)) ? "~/DataDictionary/images/defaultImages/GenderFemale.png" : "~/" + data.IP300X200) asp-append-version="true" style="height:120px;width:120px;" />
+                        }
+                        else if (data.GenderId == 3)
+                        {
+                            <img id="IP300X200" src=@((String.IsNullOrEmpty(data.IP300X200)) ? "~/DataDictionary/images/defaultImages/GenderThird.png" : "~/" + data.IP300X200) asp-append-version="true" style="height:120px;width:120px;" />
+                        }
+
+                        <div class="file">
+                            <button id="btnViewOurEduPic" class="btn btn-primary" data-toggle="modal" data-target="#OurEduPhoto" data-img="@data.UsersIP300X200" style="margin-top:10px; background-color:transparent;  color:blue">
+                                View Profile Picture
+                            </button>
+                        </div>
+                    </td>
+                    <td class="showDetails pointer">
+                        <label> @data.FirstName @data.LastName</label><br />
+                        <div class="row">
+                            <div class="col-md-2"><p>@data.EmployeeTypeName</p></div>
+                            <div class="col-md-10"><p class=@(String.IsNullOrEmpty(data.EmployeeCategoryTypeName) ? "hidden" : "")> (@data.EmployeeCategoryTypeName) </p></div>
+                        </div>
+                        OurEdu Id:<label style="background-color:yellow;">@data.UserLoginId</label><br />
+                        Email: @data.EmailAddress <br />
+                        Contact No: @data.ContactNo <br />
+                        Joining Date:@data.JoiningDate.ToShortDateString() <br />
+
+                    </td>
+
+
+                    <td>
+                        <a class="btn btn-primary btn-sm"
+                           asp-area="Institution"
+                           asp-controller="Employees"
+                           asp-action="EmployeeDetails"
+                           asp-route-empId="@data.Id">
+                            <span class="glyphicon glyphicon-new-window" style="vertical-align:middle;margin-top: -5px"></span>
+                            View Details
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div id="OurEduPhoto" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <h3 class="text-center">OurEdu Profile Picture</h3>
+                <hr class="text-info" />
+                <div class="modal-body">
+                    <div class="text-center">
+
+                        <img class="img-thumbnail img-responsive" id="oureduPic" alt="Image Not Available." />
+                        <img class="img-thumbnail img-responsive " id="imgCommon" alt="Image Not Available." src="~/DataDictionary/images/defaultImages/Common.png" />
+
+
+                    </div>
+                    <hr />
+                    <button class="btn btn-danger btn-md pull-right" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                    <br />
+                    <br />
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- #region "All Scripts" -->
+    @section Scripts
+        {
+        <script type="text/javascript">
+            $('tr td #btnViewOurEduPic').on('click', function () {
+                var imgLocation = $(this).data("img");
+                if (imgLocation == "") {
+                    $('#oureduPic').hide();
+                    $('#imgCommon').show();
+                } else {
+                    var path = '/' + $(this).data("img");
+                    $("#oureduPic").attr('src', path);
+                    $('#imgCommon').hide();
+                    $('#oureduPic').show();
+                }
+            });
+
+        </script>
+    }
+    <!-- #endregion  "All Scripts"-->
+}
+

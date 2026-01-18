@@ -1,0 +1,218 @@
+﻿
+@using Microsoft.AspNetCore.Http;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Html.Raw(Context.Session.GetString("session_loginInstitutionName"))</title>
+    <link rel="shortcut icon" href="~/@Html.Raw(Context.Session.GetString("session_loginInstitutionFavicon"))">
+
+    <environment names="Development">
+        <!--[NOTE:Default CSS Files]-->
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <script src="~/lib/jquery/dist/jquery.js"></script> <!--[NOTE:should be here. findout the issue later]-->
+        <!--[NOTE:New CSS Files]-->
+        <link rel="stylesheet" href="~/DataDictionary/css/cssBackend/common.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/common/cssCommon.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/cssBackend/layout-backend.css" type="text/css" />
+
+        <!--[NOTE: DatePicker  CSS for date]-->
+        <link rel="stylesheet" href="~/DataDictionary/DatePicker/css/bootstrap-datepicker.css" type="text/css" />
+
+        <!--[NOTE: dataTables CSS Paging and sorting]-->
+        <link rel="stylesheet" href="~/DataDictionary/DataTables/css/datatables.css" type="text/css" />
+
+
+    </environment>
+
+    <environment names="Staging,Production">
+        <!--[NOTE:Default CSS Files]-->
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <script src="~/lib/jquery/dist/jquery.js"></script> <!--[NOTE:should be here. findout the issue later]-->
+        <!--[NOTE:New CSS Files]-->
+        <link rel="stylesheet" href="~/DataDictionary/css/common/cssCommon.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/cssBackend/common.css" type="text/css" />
+        <link rel="stylesheet" href="~/DataDictionary/css/cssBackend/layout-backend.css" type="text/css" />
+
+        <!--[NOTE: DatePicker  CSS for date]-->
+        <link rel="stylesheet" href="~/DataDictionary/DatePicker/css/bootstrap-datepicker.css" type="text/css" />
+
+        <!--[NOTE: dataTables CSS Paging and sorting]-->
+        <link rel="stylesheet" href="~/DataDictionary/DataTables/css/datatables.css" type="text/css" />
+
+
+
+    </environment>
+
+</head>
+
+<body id="layout-backend">
+    
+    <div id="ActorTabs" class="container container-customized">
+
+        <!--[NOTE: Header section]-->       
+        @await Html.PartialAsync("~/Areas/Institution/Views/Shared/_headerMain_d.cshtml")
+        <ul id="NavTabs" class="nav nav-tabs">
+
+                @foreach (var cActorId in Context.Session.GetString("session_currentUserAuthentications").Split(';'))
+                {
+                    if (cActorId == "")
+                    {
+                        break;
+                    }
+                    <li @{ switch (Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_")))) { case -1: { @Html.Raw("id=\"tabUser\"")  ; @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))) && Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) ? "class=\"active\"" : "class=\"\"")  ; break; } case 1: { @Html.Raw("id=\"tabOE_Admin\"")  ; @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))) && Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) ? "class=\"active\"" : "class=\"\"")  ; break; } case 2: { @Html.Raw("id=\"tabOE_Manager\"")  ; @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))) && Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) ? "class=\"active\"" : "class=\"\"")  ; break; } case 3: { @Html.Raw("id=\"tabOE_Writer\"")  ; @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))) && Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) ? "class=\"active\"" : "class=\"\"")  ; break; } case 10: { @Html.Raw("id=\"tabStudent\"")  ; @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))) && Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) ? "class=\"active\"" : "class=\"\"")  ; break; } case 11: { @Html.Raw("id=\"tabAdmin\"")  ; @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))) && Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) ? "class=\"active\"" : "class=\"\"")  ; break; } case 12: { @Html.Raw("id=\"tabRegister\"")  ; @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))) && Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) ? "class=\"active\"" : "class=\"\"")  ; break; } case 13: { @Html.Raw("id=\"tabAccountant\"")  ; @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))) && Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) ? "class=\"active\"" : "class=\"\"")  ; break; } case 14: { @Html.Raw("id=\"tabTeacher\"")  ; @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))) && Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) ? "class=\"active\"" : "class=\"\"")  ; break; } } }>
+                        <a @{ switch (Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_")))) { case -1: { @Html.Raw("href=\"#UserPane\"")  ; @Html.Raw("data-actorId=" + cActorId)  ; break; } case 1: { @Html.Raw("href=\"#OE_AdminPane\"")  ; @Html.Raw("data-actorId=" + cActorId)  ; break; } case 2: { @Html.Raw("href=\"#OE_ManagerPane\"")  ; @Html.Raw("data-actorId=" + cActorId)  ; break; } case 3: { @Html.Raw("href=\"#OE_WriterPane\"")  ; @Html.Raw("data-actorId=" + cActorId)  ; break; } case 10: { @Html.Raw("href=\"#StudentPane\"")  ; @Html.Raw("data-actorId=" + cActorId)  ; break; } case 11: { @Html.Raw("href=\"#AdminPane\"")  ; @Html.Raw("data-actorId=" + cActorId)  ; break; } case 12: { @Html.Raw("href=\"#RegisterPane\"")  ; @Html.Raw("data-actorId=" + cActorId)  ; break; } case 13: { @Html.Raw("href=\"#AccountantPane\"")  @Html.Raw("data-actorId=" + cActorId)  ; ; break; } case 14: { @Html.Raw("href=\"#TeacherPane\"")  ; @Html.Raw("data-actorId=" + cActorId)  ; break; } } }
+                           data-toggle="tab">
+                            @{ switch (Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))))
+                                {
+                                    case -1:
+                                        {<b>User</b> break;
+                                        }
+                                    case 1:
+                                        {<b>OE Admin</b> break;
+                                        }
+                                    case 2:
+                                        {<b>OE Manager</b> break;
+                                        }
+                                    case 3:
+                                        {<b>OE Writer</b> break;
+                                        }
+                                    case 10:
+                                        {<b>Student</b> break;
+                                        }
+                                    case 11:
+                                        {<b>Admin</b> break;
+                                        }
+                                    case 12:
+                                        {<b>Register</b> break;
+                                        }
+                                    case 13:
+                                        {<b>Accountant</b> break;
+                                        }
+                                    case 14:
+                                        {<b>Teacher</b> break;
+                                        }
+                                }
+                            }
+                        </a>
+                    </li>
+                }
+            </ul>
+        <div class="tab-content">
+
+            @foreach (var cActorId in Context.Session.GetString("session_currentUserAuthentications").Split(';'))
+            {
+                if (cActorId == "")
+                {
+                    break;
+                }
+                var test = Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab"));
+                <div style="float: left;"
+                     @Html.Raw(Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == -1 && Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) == -1 ? "class=\"tab-pane fade in active\"" : Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == 1 && Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) == 1 ? "class=\"tab-pane fade in active\"" : Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == 2 && Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) == 2 ? "class=\"tab-pane fade in active\"" : Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == 3 && Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) == 3 ? "class=\"tab-pane fade in active\"" : Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == 11 && Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) == 11 ? "class=\"tab-pane fade in active\"" : Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == 10 && Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) == 10 ? "class=\"tab-pane fade in active\"" : Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == 12 && Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) == 12 ? "class=\"tab-pane fade in active\"" : Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == 13 && Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) == 13 ? "class=\"tab-pane fade in active\"" : Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == 14 && Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) == 14 ? "class=\"tab-pane fade in active\"" : "class=\"tab-pane fade \"")
+                     @Html.Raw(cActorId.Substring(0, cActorId.IndexOf("_")) == "-1" ? "id=\"UserPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "1" ? "id=\"OE_AdminPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "2" ? "id=\"OE_ManagerPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "3" ? "id=\"OE_WriterPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "11" ? "id=\"AdminPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "12" ? "id=\"RegisterPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "13" ? "id=\"AccountantPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "14" ? "id=\"TeacherPane\"" : "id=\"StudentPane\"")
+                     @Html.Raw(cActorId.Substring(0, cActorId.IndexOf("_")) == "-1" ? "data-tab-id=\"tabUserPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "1" ? "data-tab-id=\"tabOE_AdminPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "2" ? "data-tab-id=\"tabOE_ManagerPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "3" ? "data-tab-id=\"tabOE_WriterPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "11" ? "data-tab-id=\"tabAdminPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "12" ? "data-tab-id=\"tabRegisterPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "13" ? "data-tab-id=\"tabAccountantPane\"" : cActorId.Substring(0, cActorId.IndexOf("_")) == "14" ? "data-tab-id=\"tabTeacherPane\"" : "data-tab-id=\"tabStudentPane\"")>
+
+                    <!--[NOTE: Render only selected tab contents ]-->
+                    @if (Convert.ToInt64(Context.Session.GetString("session_currentActiveActorTab")) == Convert.ToInt64(cActorId.Substring(0, cActorId.IndexOf("_"))) && Convert.ToInt64(Context.Session.GetString("session_currentUserInstitutionId")) == Convert.ToInt64(cActorId.Substring(cActorId.IndexOf("_") + 1, cActorId.Length - (cActorId.IndexOf("_") + 1))))
+                    {
+                        <div class="container">
+                            <div class="backendmenu">
+
+                                @await Html.PartialAsync("~/Areas/Institution/Views/Shared/_menuMain_d.cshtml", new ViewDataDictionary(ViewData) {
+                               { "menuActorId", cActorId.Substring(0, cActorId.IndexOf("_")) },
+                               {"currentSelectedTab", Convert.ToInt64( Context.Session.GetString("session_currentActiveActorTab")) }
+                           })
+
+                            </div>
+
+                            <div class="backendcontent col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                                @RenderBody()
+
+                            </div>
+                        </div>
+
+                    }
+
+
+                </div>
+            }
+        </div>
+
+    </div>
+    <environment names="Development">
+        <!--[NOTE: Default js files]-->
+        <!--<script src="~/lib/jquery/dist/jquery.js"></script>--> <!--[NOTE:should be here. findout the issue later]-->
+
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+
+        <!--[NOTE: DatePicker for date]-->
+        <script src="~/DataDictionary/DatePicker/js/bootstrap-datepicker.js"></script>
+
+        <!--[NOTE: Table Paging and sorting]-->
+        <script src="~/DataDictionary/DataTables/js/datatables.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <!--[NOTE: Default js files]-->
+        <!--<script src="~/lib/jquery/dist/jquery.min.js"></script>--> <!--[NOTE:should be here. findout the issue later]-->
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+
+        <!--[NOTE: DatePicker for date]-->
+        <script src="~/DataDictionary/DatePicker/js/bootstrap-datepicker.min.js"></script>
+        <!--[NOTE: Table Paging and sorting]-->
+        <script src="~/DataDictionary/DataTables/js/datatables.min.js"></script>
+    </environment>
+    <script>
+
+        $(document).ready(function () {
+
+            //[NOTE-BEGIN: Desktop submenu hover]
+            $('ul.nav li.dropdown').hover(function () {
+                $(this).find('.desktop-submenu').stop(true, true).delay(200).fadeIn(500);
+            }, function () {
+                $(this).find('.desktop-submenu').stop(true, true).delay(200).fadeOut(500);
+            });
+            //[NOTE-END: Desktop submenu hover]
+
+            //[NOTE-BEGIN: Tab submenu hover]
+            $('ul.nav li.dropdown').hover(function () {
+                $(this).find('.tab-submenu').stop(true, true).delay(200).fadeIn(500);
+            }, function () {
+                $(this).find('.tab-submenu').stop(true, true).delay(200).fadeOut(500);
+            });
+            //[NOTE-END: Tab submenu hover]
+
+             //[NOTE-BEGIN: Set current tab]
+            $('#ActorTabs a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var CurrentActorTabId = $(e.target).attr("data-actorId"); // activated tab
+               $.ajax({
+                    type: 'POST',
+                   data: { 'CurrentActorTabId': CurrentActorTabId },                  
+                   url: '@Url.Action("SetCurrentActorTab", "OE_Users", new { Area = "Institution" })',
+                    
+                        traditional: true,
+                    success: function (message) {
+                        location.reload();
+                        //alert(CurrentActorTabId);
+
+                        }
+                    });
+                });
+            //[NOTE-END: Set current tab]
+
+
+
+        });
+
+    </script>
+
+
+    @RenderSection("Scripts", required: false)
+
+
+</body>
+</html>

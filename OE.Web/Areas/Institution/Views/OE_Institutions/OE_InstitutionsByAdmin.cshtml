@@ -1,0 +1,160 @@
+﻿
+@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{    
+    @using Microsoft.AspNetCore.Http
+    @model OE.Web.Areas.Institution.Models.IndexOE_InstitutionsByAdminVM
+
+    <h1 class="page-title">Institutions</h1>
+    <br />
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse">
+                        <b>Basic Information</b>
+                    </a>
+
+                    <a class="pull-right" href="#" id="basicEdit">
+                        <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                        Edit
+                    </a>
+
+                </h4>
+            </div>
+
+            <div class="panel-collapse">
+                <div class="panel-body">
+                    <div class="container">
+                        <div class="row">
+                            <!--#region "Basic Information View Section"-->
+                            <div class="col-md-12" id="BasicViewSection">
+                                <div class="col-md-6">
+                                    <div class="row" style="padding:8px">
+                                        <div class="col-md-5" hidden>Institution Id:</div>
+                                        <div class="col-md-7" hidden>@Model.OE_Institution.Id</div>
+
+                                    </div>
+
+                                    <div class="row" style="padding:8px">
+
+                                        <div class="col-md-5">Institution Name:</div>
+                                        <div class="col-md-7">@Model.OE_Institution.Name</div>
+                                    </div>
+
+
+                                    <div class="row" style="padding:8px">
+                                        <div class="col-md-5">Is License:</div>
+                                        <div class="col-md-7">                                            
+                                            <input type="checkbox" id="IsLicense" name="IsLicense" value="true" disabled @(Model.licenses.IsActive == true ? "checked=\"checked\"" : "") />
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row" style="padding:8px">
+                                        <div class="col-md-5">License Expiry Date:</div>
+                                        <div class="col-md-7">@Convert.ToDateTime(Model.licenses.EndDate).ToShortDateString()</div>
+                                    </div>
+                                    
+                                    <div class="row" style="padding:8px">
+                                        <div class="col-md-5">Logo:</div>
+                                        <div class="col-md-7">
+                                            <img class="img-rounded" src="~/@Model.OE_Institution.LogoPath" alt="Logo is missing" width="100px" height="100px" />
+                                        </div>
+
+                                    </div>
+                                    <div class="row" style="padding:8px">
+                                        <div class="col-md-5">Favicon:</div>
+                                        <div class="col-md-7">
+                                            <img class="img-rounded" src="~/@Model.OE_Institution.FaviconPath" alt="Favicon is missing" width="20px" height="20px" />
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding:8px">
+                                        <div class="col-md-5">Contact:</div>
+                                        <div class="col-md-7">@Model.OE_Institution.ContactNo</div>
+                                    </div>
+                                    <div class="row" style="padding:8px">
+                                        <div class="col-md-5">Email:</div>
+                                        <div class="col-md-7">@Model.OE_Institution.Email</div>
+                                    </div>
+                                    <div class="row" style="padding:8px">
+                                        <div class="col-md-5">Is Active:</div>
+                                        <div class="col-md-7">
+
+                                            <input type="checkbox" disabled id="IsActive" name="IsActive" value="@Model.OE_Institution.IsActive" @(Model.OE_Institution.IsActive == true ? "checked=\"checked\"" : "") />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!--#endregion "Basic Information View Section"-->
+                        <!--#region "Basic Information Add Form Section"-->
+                        <form enctype="multipart/form-data">
+                            <div class="col-md-12" id="BasicEditSection" style="display:none">
+                                <div class="col-md-6">
+                                    <div class="row" style="padding:2px">
+                                        <div class="col-md-5" hidden>Institution Id:</div><div class="col-md-7">
+                                            <input class="form-control" type="hidden" name="OE_Institution.Id" value="@Model.OE_Institution.Id">
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="padding:2px">
+                                        <div class="col-md-5">Email:</div>
+                                        <div class="col-md-7"><input class="form-control" type="text" name="OE_Institution.Email" value="@Model.OE_Institution.Email" /></div>
+                                    </div>
+                                    <div class="row" style="padding:2px">
+                                        <div class="col-md-5">Contact No:</div>
+                                        <div class="col-md-7"><input class="form-control" type="text" name="OE_Institution.ContactNo" value="@Model.OE_Institution.ContactNo" /></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 center-block">
+                                    <div class="col-md-6">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-success"
+                                                formmethod="post"
+                                                asp-area="Institution"
+                                                asp-controller="OE_Institutions"
+                                                asp-action="EditInstitutionByAdmin">
+                                            <span class="glyphicon glyphicon-save"></span> Save
+                                        </button>
+                                        <a class="btn btn-danger" style="padding:5px" id="basicCancel">
+                                            <span class="glyphicon glyphicon-remove"></span> Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <!--#endregion "Basic Information Add Form Section"-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- #region "All Scripts" -->
+    @section Scripts
+        {
+
+        <script type="text/javascript">
+            $('#basicEdit').on('click', function () {
+                $('#BasicViewSection').hide();
+                $('#BasicEditSection').show();
+
+            });
+            $('#basicCancel').on('click', function () {
+                $('#BasicEditSection').hide();
+                $('#BasicViewSection').show();
+            });
+        </script>
+    }
+
+    <!-- #endregion  "All Scripts"-->
+    
+}

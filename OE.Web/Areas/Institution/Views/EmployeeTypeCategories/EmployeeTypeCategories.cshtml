@@ -1,0 +1,268 @@
+﻿
+@model OE.Web.Areas.Institution.Models.IndexEmployeeTypeCategoriesVM
+
+<div class="informationArea">
+    <span class="label label-info "> Institution: @Model.InstitutionName </span>
+</div>
+
+<h1 class="page-title">List of Employee Type Categories</h1>
+<br />
+<button class="btn btn-success btn-sm " id="btnAddEmployeeTypeCategories" name="btnAddEmployeeTypeCategories" data-toggle="modal" data-target="#mdlAddEmployeeTypeCategories">
+    <span class="glyphicon glyphicon-plus" style="vertical-align:middle;margin-top: -5px"></span>
+    New
+</button>
+<label>
+    <a tabindex="0" data-toggle="popover" data-trigger="focus" data-container="body" title="Employee Type Categories" data-content="Employee Type Category means specific designation of an employee. For example-  Faculty may be categoried by Lecturer, Assistant Professor, Professon and so on.">
+        <span class="glyphicon glyphicon-info-sign" style="top:5px; font-size:larger"></span>
+    </a>
+</label>
+<h4 class="text-danger">@ViewBag.msg</h4>
+
+<br />
+<br />
+@if (Model._EmpTypeCategoryList.Count() == 0)
+{
+    <div class="well"><b>No Employee Type Category has been added yet.</b></div>
+}
+else
+{
+    <table class="table table-bordered table-hover" id="tblGetEmployeeTypeCategories">
+        <thead>
+            <tr>
+                <th> Name </th>
+                <th> Type </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var data in Model._EmpTypeCategoryList)
+            {
+                <tr>
+                    <td class="showDetails pointer">@data.Name</td>
+                    <td class="showDetails pointer">@data.EmployeeType</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" id="btnEdit" name="btnEdit" data-toggle="modal" data-target="#modalEdit"
+                                data-id="@data.Id"
+                                data-name="@data.Name"
+                                data-employeeid="@data.EmployeeTypeId">
+                            <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                            Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm " id="btnDeleteEmployeeTypeCategories" data-toggle="modal" data-target="#modalDelete" data-id="@data.Id">
+                            <span class="glyphicon glyphicon-trash" style="vertical-align:middle;margin-top: -5px"></span>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+<!-- #region "All Modals" -->
+<div id="mdlAddEmployeeTypeCategories" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3>Addition of  employee type category</h3>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" id="addEmployeeTypeCategories">
+                    <label>Employee Type:</label>
+                    <select class="form-control" id="ddlAddEmpTypeId" name="EmpTypeCategoryList.EmployeeTypeId" asp-items="@(new SelectList(ViewBag.ddlempType, "Id","Name"))">
+                        <option value="0">Select Employee Type</option>
+                    </select>
+                    <label> Type Category Name</label>
+                    <input type="text" name="EmpTypeCategoryList.Name" id="txtAddEmpCategoryName" required class="form-control">
+                    <hr />
+                    <button class="btn btn-success btn-md" id="btnSaveNewEmpCategory">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="modalEdit" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                <h4 class="modal-title">Edit Employee Type Category</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <input type="hidden" name="editEmpCategoryId" id="editEmpCategoryId">
+
+                    <label>Employee Type:</label>
+                    <select class="form-control" id="ddlEditEmpTypeId" name="ddlEditEmpTypeId" asp-items="@(new SelectList(ViewBag.ddlempType, "Id","Name"))">
+                        <option value="0">Select Employee Type</option>
+                    </select>
+                    <label>Type Category Name</label>
+                    <input type="text" name="txtEditEmpCategoryName" required id="txtEditEmpCategoryName" class="form-control">
+                    <br />
+                    <button class="btn btn-success btn-md" formmethod="post"
+                            asp-controller="EmployeeTypeCategories"
+                            asp-action="Edit"
+                            asp-route-editEmpCategoryId="editEmpCategoryId"
+                            asp-route-txtEditEmpCategoryName="txtEditEmpCategoryName"
+                            asp-route-ddlEditEmpTypeId="ddlEditEmpTypeId">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="modalDelete" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <form enctype="multipart/form-data" id="EmpTypesCategories">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete Employee Type Category</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p><h3>Are you sure you want to delete this?</h3></p>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="empTypesCategoriesId" id="empTypesCategoriesId">
+                    <button class="btn btn-md btn-success" id="btnDeleteEmpTypeCategories">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Yes
+                    </button>
+
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        No
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="modalMessage" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Message</h4>
+            </div>
+            <div class="modal-body">
+                <p><h3 id="txtMessage" style="color:red"></h3></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger btn-md " data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                    Ok
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- #endregion  "All Modals"-->
+<!-- #region "All Scripts" -->
+
+@section Scripts{
+
+    <script type="text/javascript">
+        //[NOTE: Tip]
+        $('[data-toggle="popover"]').popover({
+            trigger: 'focus'
+        })
+        $('tr td #btnEdit').on('click', function () {
+            $("#editEmpCategoryId").val($(this).data("id"));
+            $("#txtEditEmpCategoryName").val($(this).data("name"));
+            $("#ddlEditEmpTypeId").val($(this).data("employeeid"));
+        });
+
+        $('#tblGetEmployeeTypeCategories tr td #btnDeleteEmployeeTypeCategories').on('click', function () {
+            $("#empTypesCategoriesId").val($(this).data("id"));
+        });
+
+
+
+        $("#btnDeleteEmpTypeCategories").on('click', function (e) {
+            e.preventDefault();
+            var empTypesCategoriesId = $('input#empTypesCategoriesId').val();
+            $.ajax({
+                type: 'POST',
+                data: { empTypesCategoriesId: empTypesCategoriesId },
+                dataType: 'json',
+                cache: false,
+               url: '@Url.Action("DeleteEmployeeTypeCategories", "EmployeeTypeCategories", new { Area = "Institution" })',
+                success:                   
+                    function (data) {
+                        if (data.success == true) {
+                            location.reload();
+                        }
+                        if (data.success == false) {
+                            $('#txtMessage').text(data.message);
+                            $('#modalMessage').modal('show');
+                        }
+                    },
+                error: function (data) {
+
+                },
+                complete: function (data) {
+                }
+                
+                });
+        });
+
+        $("#btnSaveNewEmpCategory").on('click', function (e) {
+            e.preventDefault();
+            var formData = new FormData($("#addEmployeeTypeCategories")[0]);
+             $.ajax({
+               type: 'POST',
+               data: formData,
+               contentType: false,
+               processData: false,
+
+               url: '@Url.Action("InsertEmployeeTypeCategories", "EmployeeTypeCategories", new { Area = "Institution" })',
+                 success: function (response) {
+                     location.reload();
+                 },
+                 error: function (response) {
+                     alert('error: ' + response.message);
+                 },
+                 complete: function () {
+                 }
+
+                });
+        });
+
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

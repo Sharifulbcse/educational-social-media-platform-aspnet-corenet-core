@@ -1,0 +1,100 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexAttendanceDetailsByStudentVM
+
+    <ol class="breadcrumb pull-left" style="background-color:transparent">
+        <li><a asp-controller="Attendances" asp-action="RespectedCoursesByStudent" asp-area="Institution">Courses Index</a></li>
+        <li class="active">Attendance List</li>
+    </ol>
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+    <br />
+    <br />
+    <h1 class="page-title">   @ViewData["Title"]</h1>
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-3">
+                <img class="img-circle" src="~/@Model.IP300X200" alt="Student Image" />
+
+            </div>
+
+            <br />
+        </div>
+        <div class="row center-block">  <label>Student Name: @Model.StudentName</label></div>
+
+
+        <div class="row">
+            <div class="col-md-4">Class: <b>@Model.ClassName</b></div>
+            <div class="col-md-4">Course: <b>@Model.AssignedCourseName</b></div>
+            <div class="col-md-4">Section: <b>@Model.AssignedSectionName</b></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">Total Class: <b>@Model.TotalClasses day</b></div>
+            <div class="col-md-4">Total Presents: <b>@Model.TotalPresents day</b></div>
+            <div class="col-md-4">Total Absents: <b>@Model.TotalAbsents day</b></div>
+        </div>
+
+    </div>
+    <br />
+    <div class="col-md-12">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th width="50px"> #SN </th>
+                    <th width="120px"> Date </th>
+                    <th class="text-center"> Time Slot</th>
+                    <th> Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int i = 1;}
+                @foreach (var item in Model._Atendances)
+                {
+                    <tr>
+                        <td class="showDetails pointer"> @i</td>
+                        <td class="showDetails pointer">@item.AttendanceDate.ToShortDateString()</td>
+                        <td class="showDetails pointer text-center">@item.TimeSlot</td>
+
+
+                        @if (item.IsPresent == true)
+                        {
+                            <td class="showDetails pointer text-center" style="background-color:green;"><b>Present</b></td>
+                        }
+                        else
+                        {
+                            <td class="showDetails pointer text-center" style="background-color:red;"><b>Absent</b></td>
+                        }
+
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- #region "All Modals" -->
+
+    <!-- #endregion  "All Modals"-->
+
+    <!-- #region "All Scripts" -->
+    @section Scripts
+        {
+
+        <script type="text/javascript">
+
+        </script>
+
+    }
+
+    <!-- #endregion  "All Scripts"-->
+
+}
+

@@ -1,0 +1,71 @@
+﻿
+@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexAssignedTeachersVM
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+    <h4>@Model.EmployeeName</h4>
+    <br />
+    <label>Taken Courses Information of @Model.ResultSeacrchYear for @Model.ExamTypeName</label>
+    
+    if (Model.assignedTeachers.Count == 0)
+    {
+        <div class="well"><b>No Record has been matched according to selections.</b></div>
+    }
+    else
+    {
+
+        <br />
+
+        <div class="table-responsive">
+            <form enctype="multipart/form-data">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>SL#</th>
+                            <th>Class</th>
+                            <th>Section</th>
+                            <th>Course</th>
+                            <th> </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var data in Model.assignedTeachers)
+                        {
+                            <tr>
+                                <td class="showDetails pointer">@data.Id</td>
+                                <td class="showDetails pointer">@data.ClassName</td>
+                                <td class="showDetails pointer">@data.AssignedSectionName</td>
+                                <td class="showDetails pointer">@data.AssignedCourseName</td>
+                                <td>
+                                    <a class="btn btn-success"
+                                       asp-controller="Results"
+                                       asp-action="Grading"
+                                       asp-area="Institution"
+                                       asp-route-EmployeeId="@Model.EmployeeId"
+                                       asp-route-SubjectId="@data.AssignedCourseId"
+                                       asp-route-SectionId="@data.AssignedSectionId"
+                                       asp-route-ClassId="@data.ClassId"
+                                       asp-route-SelectedYear="@Model.ResultSeacrchYear"
+                                       asp-route-ExamTypeId="@Model.ExamTypeId">
+                                        Grade
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    }
+
+
+    <!-- #endregion  "All Modals"-->
+
+}

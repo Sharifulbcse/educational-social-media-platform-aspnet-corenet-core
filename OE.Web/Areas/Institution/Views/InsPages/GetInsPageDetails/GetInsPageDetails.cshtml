@@ -1,0 +1,357 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexInsPageDetailsVM
+
+<h1 class="page-title">Institution Page Details</h1>
+
+<br />
+<h6><a asp-area="Institution" asp-controller="InsPages" asp-action="InsPages">Pages List</a><span class="glyphicon glyphicon-chevron-right"></span>Page Details</h6>
+
+<br />
+
+<button class="btn btn-success btn-sm " id="btnAddPageDetails" name="btnAddPageDetails" data-toggle="modal" data-target="#mdlAddPageDetails" data-inspageid=@Model.InsPageId>
+    <span class="glyphicon glyphicon-plus" style="vertical-align:middle;margin-top: -5px"></span>
+    New
+</button>
+
+<br />
+<br />
+<table class="table table-bordered table-hover" id="tblGetInsPageDetails">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Paragraph No.</th>
+            <th>Description</th>
+            <th>Action </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var data in Model.InsPageDetailsList)
+        {
+            <tr>
+                <td class="showDetails pointer">@data.Title</td>
+                <td class="showDetails pointer">@data.Sorting</td>
+                <td class="showDetails pointer">@Html.Raw(data.Description)</td>
+
+                <td>
+                    <!--[Shariful-25-6-19]-->
+                    @*<button class="btn btn-primary btn-sm open-dialog"
+                            id="btnEditPageDetails"
+                            data-toggle="modal"
+                            data-target="#mdlEditPageDetails"
+                            data-id="@data.Id"
+                            data-inspageid="@data.InsPageId"
+                            data-descrption="@data.Description"
+                            data-sorting="@data.Sorting"
+                            data-title="@data.Title">
+                        <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px">
+                        </span>
+                        Edit
+                    </button>*@
+                    <!--[~Shariful-25-6-19]-->
+                    <!--[Shariful2-25-6-19]-->
+                    <button class="btn btn-primary btn-sm open-dialog"
+                            id="btnEditPageDetails"
+                            data-toggle="modal"
+                            data-target="#mdlEditPageDetails"
+                            data-id="@data.Id"
+                            data-inspageid="@data.InsPageId"
+                            data-descrption="@Html.Raw(data.Description)"
+                            data-sorting="@data.Sorting"
+                            data-title="@data.Title">
+                        <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px">
+                        </span>
+                        Edit
+                    </button>
+                    <!--[~Shariful2-25-6-19]-->
+                    <button class="btn btn-danger btn-sm openDiag" id="btnDeletePageDetails" data-toggle="modal" data-target="#mdlDeletePageDetails" data-id="@data.Id" data-inspageid="@data.InsPageId">
+                        <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<!-- #region All Modals -->
+<div id="mdlAddPageDetails" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="myFunction()">&times;</button>
+                <h3>Add Page Detail</h3>
+            </div>
+            <div class="modal-body">
+             
+                <form enctype="multipart/form-data" id="addInsPageDetails">
+                    <input type="hidden" name="InsPageDetails.InsPageId" id="txtAddInsPageId" class="form-control">
+                    <label>Title</label>
+                    <input type="text" name="InsPageDetails.Title" id="txtAddPageDetailsTitle" class="form-control">
+                    
+                    <label>Description</label>
+                    <textarea name="InsPageDetails.Description" id="txtAddPageDetailsDescriptionValue" rows="10" required class="form-control rounded-0"></textarea>
+                    
+                    <label>Paragraph No.</label>
+                    <input type="number" name="InsPageDetails.Sorting" id="txtAddPageDetailsSorting" class="form-control">
+                    
+                    <hr />
+
+                    <button class="btn btn-success btn-md" id="btnSaveNewInsPageDetails">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+
+
+                </form>
+               
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="mdlEditPageDetails" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="myFunction()">&times;</button>
+                <h4 class="modal-title">Edit Page Details info</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" enctype="multipart/form-data" id="frmEdit" onsubmit='editNewLinePageDetails();'>
+
+                    <input type="hidden" id="txtEditId" name="txtEditId" required class="form-control">
+
+                    <input type="hidden" id="txtEditInsPageId" name="txtEditInsPageId" value="@Model.InsPageId" required class="form-control">
+
+                    <label>Page Details Title</label>
+                    <input type="text" name="txtEditPageDetailsTitle" id="txtEditPageDetailsTitle" class="form-control">
+
+                    <label>Full Message</label>
+
+                    <!--Note:Short Description message-->
+                    <textarea class="hidden" id='txtEditPageDetailsDescription' name='txtEditPageDetailsDescription'></textarea>
+                    <div class="form-group">
+                        <textarea required class="form-control rounded-0" id="txtEditPageDetailsDescriptionValue" name="txtEditPageDetailsDescriptionValue" rows="5"></textarea>
+                    </div>
+
+
+                    <label>Paragraph No.</label>
+                    <input type="number" name="txtEditPageDetailsSorting" id="txtEditPageDetailsSorting" class="form-control"><br /><br />
+                    <br />
+                    <hr />
+
+                    <button class="btn btn-success btn-md" formmethod="post" asp-area="Institution" asp-controller="InsPages" asp-action="EditPageDetails"
+                            asp-route-txtEditId="txtEditId"
+                            asp-route-txtEditInsPageId="txtEditInsPageId"
+                            asp-route-txtEditPageDetailsTitle="txtEditPageDetailsTitle"
+                            asp-route-txtEditPageDetailsDescription="txtEditPageDetailsDescription"
+                            asp-route-txtEditPageDetailsSorting="txtEditPageDetailsSorting">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+
+                    <button class="btn btn-danger btn-md " data-dismiss="modal" onclick="myFunction()">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="mdlDeletePageDetails" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form enctype="multipart/form-data" id="deletePageDetails">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete</h4>
+                </div>
+                <div class="modal-body">
+                    <p><h3>Are you sure you want to delete this?</h3></p>
+
+                </div>
+                <div class="modal-footer">
+
+                    <input type="hidden" name="insPageDetailId" id="insPageDetailId">
+                    <input type="hidden" name="insPageId" id="insPageId">
+                    <button class="btn btn-md btn-success" id="btnDeleteInsPageDetail">
+                        <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                        Yes
+                    </button>
+
+                    <button class="btn btn-md btn-danger" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        No
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="modalMessage" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Message</h4>
+            </div>
+            <div class="modal-body">
+                <p><h3 id="txtMessage" style="color:red"></h3></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger btn-md " data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                    Ok
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- #region "All Scripts" -->
+@section Scripts
+    {
+    <script type="text/javascript">
+      
+        $("#btnSaveNewInsPageDetails").on('click', function (e) { 
+            addNewLinePageDetails();
+            e.preventDefault();
+            var formData = new FormData($("#addInsPageDetails")[0]);              
+            var insPageId = $('#btnAddPageDetails').data("inspageid");
+           
+             $.ajax({
+               type: 'POST',
+               data: formData,
+               contentType: false,
+               processData: false,
+
+               url: '@Url.Action("InsertPageDetails", "InsPages", new { Area = "Institution" })',
+                 success: function (response) {
+                     var urlReload = '@Url.Action("GetInsPageDetails", "InsPages")' + '?insPageId=' + insPageId ;
+                    location.replace(urlReload);
+
+                 },
+                 error: function (response) {
+                     alert('error: ' + response.message);
+                 },
+                 complete: function () {
+                 }
+
+                });
+        });
+
+        
+       
+         //[NOTE:New button- send value to new modal]
+        $('#btnAddPageDetails').on('click', function () {
+            $("#txtAddInsPageId").val($(this).data("inspageid"));
+           
+        });
+ 
+    
+
+    //[NOTE:JS for auto load values into edit form]
+    $('tr td #btnEditPageDetails').on('click', function () {
+        $("#mdlEditPageDetails #txtEditId").val($(this).data("id"));
+        $("#mdlEditPageDetails #txtEditPageDetailsTitle").val($(this).data("title"));
+
+        //[Shariful-25-6-19]
+        //var fullDescription = $(this).data("descrption");
+        //fullDescription = fullDescription.replace(new RegExp('<br />', 'g'), '\r\n');
+        //[~Shariful-25-6-19]
+        //[Shariful2-25-6-19]
+        var fullDescription = $(this).data("descrption");
+        fullDescription = fullDescription.replace(new RegExp('<br/>', 'g'), '\r\n');
+        //[~Shariful2-25-6-19]
+        $("#mdlEditPageDetails #txtEditPageDetailsDescriptionValue").val(fullDescription);
+        
+        $("#mdlEditPageDetails #txtEditPageDetailsSorting").val($(this).data("sorting"));
+    });
+
+    //[NOTE:JS for passing Id while trying to delete a record.]
+    $('#tblGetInsPageDetails tr td #btnDeletePageDetails').on('click', function () {
+    $("#insPageDetailId").val($(this).data("id"));
+    $("#insPageId").val($(this).data("inspageid"));
+    });
+
+        
+    $("#btnDeleteInsPageDetail").on('click', function (e) {
+        e.preventDefault();
+        var insPageDetailId = $('input#insPageDetailId').val();
+        var insPageId = $('input#insPageId').val();
+        $.ajax({
+        type: 'POST',
+        data: { insPageDetailId: insPageDetailId },
+        dataType: 'json',
+        cache: false,
+        url: '@Url.Action("DeletePageDetails", "InsPages", new { Area = "Institution" })',
+        success:function (data) {
+                if (data.success == true) {
+                    location.reload();
+                }
+                if (data.success == false) {
+                    $('#txtMessage').text(data.message);
+                    $('#modalMessage').modal('show');
+                }
+            },
+        error: function (data) {
+
+        },
+        complete: function (data) {
+
+        }
+
+
+    });
+    });
+
+
+    //[NOTE:Resetting Form]
+    function myFunction() {
+    document.getElementById("frmEdit").reset();
+    document.getElementById("frmAddPageDetails").reset();
+    ClrAddPreview();
+    }
+
+
+
+        function addNewLinePageDetails() {           
+            text = document.getElementById('txtAddPageDetailsDescriptionValue').value;
+            text = text.replace(/ /g, "[sp]");
+            text = text.replace(/\n/g, "[nl]");
+            document.getElementById('txtAddPageDetailsDescriptionValue').value = text;
+            return false;
+        }
+
+    function editNewLinePageDetails() {
+
+    text = document.getElementById('txtEditPageDetailsDescriptionValue').value;
+    text = text.replace(/ /g, "[sp]");
+    text = text.replace(/\n/g, "[nl]");
+    document.getElementById('txtEditPageDetailsDescription').value = text;
+    return false;
+    }
+
+
+
+    </script>
+}
+<!-- #endregion  "All Scripts"-->

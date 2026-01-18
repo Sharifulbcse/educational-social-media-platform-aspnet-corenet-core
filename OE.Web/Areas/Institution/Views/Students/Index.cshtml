@@ -1,0 +1,52 @@
+﻿
+@model OE.Web.Areas.Institution.Models.IndexStudentsVM
+
+<br />
+<br />
+<div class="container">
+    <div class="col-lg-9">
+        <div class="panel panel-default" style="padding:130px">
+            <form>
+                <br />
+                <label>Year</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-calendar"></i></span>
+                    <input type="text" name="year" id="selectedYear" value="@DateTime.Now.Year" class="form-control" placeholder="Select Year" required>
+                </div>
+                <br />
+                <label>Class</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-education"></i></span>
+                    
+                    <select class="form-control" id="addClassId" name="ddlClass" asp-for-id="Id" required asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                        <option value="0">All classes</option>
+                    </select>
+                   
+                </div>
+                <br />                
+                <input class="btn btn-success btn-lg  btn-success" type="submit" value="Search" formmethod="post"
+                       asp-controller="Students"
+                       asp-action="Students"
+                       asp-route-year="year"
+                       asp-route-ddlClass="ddlClass">               
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $('#selectedYear').datepicker({
+            format: "yyyy",
+            viewMode: "years",
+            minViewMode: "years",
+            autoclose: true
+        });
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

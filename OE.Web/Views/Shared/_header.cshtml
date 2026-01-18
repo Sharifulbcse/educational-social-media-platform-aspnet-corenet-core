@@ -1,0 +1,78 @@
+﻿
+@using OE.Web.Models
+
+@{
+    var Layoutmodel = (IndexLayoutVM)ViewBag.IndexLayoutVM;
+}
+
+@{
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+}
+
+<nav class="container-fluid top-bar  navbar-fixed-top  ">
+    <div class="container">
+        <div class="raw">
+            <div class="col-sm-3 hidden-xs hidden-sm">
+                <div class="socialmenu">                    
+                    
+                    @foreach (var data in Layoutmodel._insLinksVM)
+                    {
+                        <a href="@Html.Raw(data.Url)" target="_blank">
+                            <img src="~/@Html.Raw(data.IP24X24)" title="@Html.Raw(data.Name)">
+                        </a>
+
+
+                    }
+                    
+                </div>
+            </div>
+            <div class="col-sm-9 text-right contact_info">
+                <!--[NOTE: for desktop]-->
+                <div class="hidden-xs hidden-sm ">                    
+                    <span class="glyphicon glyphicon-envelope "></span><a href="@Html.Raw(Layoutmodel.Email)" style="text-decoration:none;color:white;"> @Html.Raw(Layoutmodel.Email)  </a>
+                    &nbsp;&nbsp;| &nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-earphone"></span><a href="#" style="text-decoration:none;color:white;">  @Html.Raw(Layoutmodel.Contact)</a>
+                    
+                </div>
+
+                <!--[NOTE: for pad or mobile]-->
+                <div class="visible-xs visible-sm " style="text-align:center;">
+                    <span class="glyphicon glyphicon-earphone"></span><a href="#" style="text-decoration:none;color:white;">  +8801833-455558</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</nav>
+<nav class="navbar navbar-default ">
+    <div class="container">
+        <div class="navbar-header ">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a asp-area="" asp-controller="Home" asp-action="Login" class="navbar-brand-customized">
+                <img src="~/@Html.Raw(Layoutmodel.Logo)" style="width:40px; height:40px;" />
+                
+            </a>
+        </div>
+        <div class="navbar-collapse collapse nav_my" id="myNavbar">
+            <ul class="nav navbar-nav mynav">
+                <li><a asp-area="" asp-controller="Home" asp-action="InsPageDetails" asp-route-insPageId="1">About Us</a></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="InsPageDetails" asp-route-insPageId="2">Contact Us</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right mynav">
+                <li><a asp-area="" asp-controller="Home" asp-action="CreateLoginAccount">Create an Account</a></li>
+
+                <li><a asp-area=" " asp-controller="Home" asp-action="Login">Login</a></li>
+
+            </ul>
+        </div>
+    </div>
+
+</nav>
+
+<!-- end of Navsction -->

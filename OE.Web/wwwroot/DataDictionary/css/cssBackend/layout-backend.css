@@ -1,0 +1,187 @@
+﻿
+/*[NOTE:Layout section]*/
+#layout-backend {
+    background-color: #e9ebee;
+    padding-bottom: 35px;
+}
+#layout-backend body {
+    padding-bottom:50px;
+}
+    #layout-backend .informationArea {
+        margin: 3px 0px 3px 0px;
+        float: right;
+    }
+#layout-backend .nav-tabs {
+    padding-top: 50px;
+}
+#layout-backend ul li a {
+        background-color: #e9ebee;
+    }
+#layout-backend .backendmenu {
+        width: 180px;
+        position: fixed;
+        height: 100%;
+        z-index: 1;
+        background-color: #e9ebee;
+    }
+#layout-backend .backendcontent {
+        margin-left: 180px;
+        padding-bottom: 25px;
+        max-width: 950px;
+        float: left;
+        background-color: #ffffff;
+    }
+
+/*[NOTE:Menu section]*/
+#BackendMenu ul.menu {
+    list-style-type: none;    
+    background-color: #e9ebee;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 120px);    
+}
+#BackendMenu ul.menu li {
+        padding: 05px;
+        font-size: 16px;
+        font-family: "Trebuchet MS", Arial, sans-serif;
+    }
+#BackendMenu ul.menu li a {
+            height: 20px;
+            width: 170px;
+            padding: 0px;
+            padding-left: 25px;
+            background: url(/DataDictionary/images/menuIcons_Backend.png) no-repeat;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+    #BackendMenu ul.menu li.home a {
+        background-position: -327px -267px;
+        width: 18px;
+        height: 17px;        
+    }
+    #BackendMenu ul.menu li.profile a {
+        background-position: -1px -255px;
+        width: 18px;
+        height: 20px;
+    }
+    #BackendMenu ul.menu li.resetPassword a {
+        background-position: -165px -186px;
+        width: 18px;
+        height: 19px;
+    }
+    #BackendMenu ul.menu li.institution a {
+        background-position: 0px -2px;
+        width: 17px;
+        height: 17px;
+    }
+    #BackendMenu ul.menu li.staff a {
+        background-position: -326px -2px;
+        width: 20px;
+        height: 18px;
+    }
+    #BackendMenu ul.menu li.license_institution a {
+        background-position: -165px -189px;
+        width: 20px;
+        height: 17px;
+    }
+    #BackendMenu ul.menu li.license_staff a {
+        background-position: -165px -189px;
+        width: 20px;
+        height: 17px;
+    }
+    #BackendMenu ul.menu li.departments a {
+        background-position: -165px -89px;
+        width: 20px;
+        height: 21px;
+    }
+    #BackendMenu ul.menu li.classes a {
+        background-position: -82px -2px;
+        width: 20px;
+        height: 15px;
+    }
+
+    #BackendMenu ul.menu li.marks a {
+        background-position: -328px -92px;
+        width: 18px;
+        height: 20px;
+    }
+    #BackendMenu ul.menu li.mark_Types a {
+        background-position: -328px -92px;
+        width: 18px;
+        height: 20px;
+    }
+
+    #BackendMenu ul.menu li.students a {
+        background-position: -329px -2px;
+        width: 17px;
+        height: 19px;
+    }
+    #BackendMenu ul.menu li.countries a {
+        background-position: 0px -89px;
+        width: 18px;
+        height: 19px;
+    }
+
+    #BackendMenu ul.menu li.subjects a {
+        background-position: -166px -3px;
+        width: 19px;
+        height: 19px;
+    }
+    #BackendMenu ul.menu li.subject_types a {
+        background-position: -166px -3px;
+        width: 19px;
+        height: 19px;
+    }
+    #BackendMenu ul.menu li.results a {
+        background-position: -1px -181px;
+        width: 16px;
+        height: 20px;
+    }
+    #BackendMenu ul.menu li.grades a {
+        background-position: -83px -90px;
+        width: 18px;
+        height: 19px;
+    }
+    #BackendMenu ul.menu li.exams a {
+        background-position: -245px -93px;
+        width: 18px;
+        height: 16px;
+    }
+
+    #BackendMenu ul.menu li.sections a {
+        background-position: -78px -187px;
+        width: 20px;
+        height: 18px;
+    }
+
+#BackendMenu .MenuGroup {
+    font-size: 13px;
+    color: #616770;
+    display: block;
+    line-height: 17px;
+    margin: -2px 0 -1px;
+    padding: 4px 0;
+}
+#BackendMenu .MenuGroup h4 {
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 0px;
+    }
+#BackendMenu .MenuItem a {
+    color: #1d2129;
+    display: block;
+    min-height: 17px;
+}
+#BackendMenu .MenuItem:hover {
+    background-color: #f6f7f9;
+    border: 1px solid #dddfe2;
+    border-radius: 2px;
+    bottom: -1px;
+    content: '';
+    left: -1px;
+    right: -1px;
+    top: -1px;
+}
+    

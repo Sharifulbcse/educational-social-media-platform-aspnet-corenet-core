@@ -1,0 +1,478 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexAssignedCoursesVM
+
+@{
+    ViewData["Title"] = "Assign Courses";
+}
+<div class="informationArea">
+    <span class="label label-info "> Institution: @Model.InstitutionName </span>
+</div>
+
+<h1 class="page-title">Assign Course</h1>
+<button class="btn btn-success" id="addcourse">Assign Course</button>
+
+<button class="btn btn-success btn-sm " data-toggle="modal" data-target="#mdlFilter">
+    <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+    Filter Search
+</button>
+
+<div class="input-group pull-right">
+  
+    <label>
+        Current Year:
+        @((Model.courseVM.Count == 0) ? "" : Model.courseVM[0].Year.Year.ToString())
+    </label>
+   
+</div>
+
+
+<br />
+<br />
+<div class="col-md-12">
+    <table class="table table-bordered table-hover" id="datatable">
+        <thead>
+            <tr>
+                <th> Year </th>
+                <th> Class</th>
+                <th> Section</th>
+                <th> Subject </th>
+                <th>  </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="rowinput" style="display:none">
+
+                <td class="showDetails pointer"><input type="text" name="addYear" id="addYear" class="form-control" /></td>
+
+                <td class="showDetails pointer">
+                    <select class="form-control" id="addClassId" asp-for-id="Id" asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                        <option value="0">Select Class</option>
+                    </select>
+                </td>
+
+                <td class="showDetails pointer">
+                    <select class="form-control" id="addSectionId" asp-for-id="Id" asp-items="@(new SelectList (String.Empty, "Id","Name"))">
+                        <option value="0">Select Section</option>
+                    </select>
+                </td>
+
+
+                <td class="showDetails pointer">
+                    <select class="form-control" id="addSubjectId" asp-for-id="Id" asp-items="@(new SelectList (String.Empty, "Id","Name"))">
+                        <option value="0">Select Subject</option>
+                    </select>
+
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-sm" id="btnAddSave">
+                        <span class="glyphicon glyphicon-save" style="vertical-align:middle;margin-top: -5px"></span>
+                        Save
+                    </button>
+
+                    <button class="btn btn-danger btn-sm " id="btnAddCancel">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </td>
+
+            </tr>
+            @foreach (var data in Model.courseVM)
+            {
+                <tr>
+                    <td id="year" class="showDetails pointer">
+                        <p>@data.Year.Year</p>
+                        <input type="text" id="editYear" name="editYear" class="form-control editYear" style="display:none" />
+                    </td>
+
+                    <td id="class" class="showDetails pointer">
+                        <p>@data.ClassName</p>
+                        <select class="form-control" style="display:none" id="editddlClassId" asp-for-id="Id" asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                            <option value="0">Select Class</option>
+                        </select>
+                    </td>
+
+
+                    <td id="section" class="showDetails pointer">
+                        <p>@data.SectionName</p>
+                        <select class="form-control" style="display:none" id="editddlSectionId" asp-for-id="Id" asp-items="@(new SelectList (String.Empty, "Id","Name"))"></select>
+                    </td>
+
+
+                    <td id="course" class="showDetails pointer">
+                        <p>@data.CourseName</p>
+                        <select class="form-control" style="display:none" id="editddlCourseId" asp-for-id="Id" asp-items="@(new SelectList (String.Empty, "Id","Name"))"></select>
+                    </td>
+                                       
+                    <td id="buttons">
+
+                        <button class="btn btn-primary btn-sm btnEditDelete" id="btnEdit" data-id="@data.Id" data-year="@data.Year.Year" data-class="@data.ClassId" data-section="@data.AssignedSectionId" data-course="@data.SubjectId">
+                            <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                            Edit
+                        </button>
+
+                        <button class="btn btn-danger btn-sm btnEditDelete" id="btnDelete" data-id="@data.Id">
+                            <span class="glyphicon glyphicon-trash" style="vertical-align:middle;margin-top: -5px"></span>
+                            Delete
+                        </button>
+                        <button class="btn btn-primary btn-sm btnUpdateCancel" id="btnUpdate" data-id="@data.Id" style="display:none">
+                            <span class="glyphicon glyphicon-save" style="vertical-align:middle;margin-top: -5px"></span>
+                            Update
+                        </button>
+
+                        <button class="btn btn-danger btn-sm btnUpdateCancel" id="btnEditCancel" style="display:none">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top: -5px"></span>
+                            Cancel
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- #region "All Modals" -->
+<div id="mdlFilter" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3>Filter Search</h3>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" id="frmFilter">
+                    <label>Year</label>
+
+
+                    <input type="text" name="Year" value="@((Model.courseVM.Count == 0)?"":Model.courseVM[0].Year.Year.ToString())" id="fltrYear" class="form-control">
+
+                    <label>Class</label>
+                    <select class="form-control" id="fltrClassId" name="ddlClass" asp-for-id="Id" asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                        <option value="0">Select Class</option>
+                    </select>
+                    <label>Assigned Section</label>
+                    <select class="form-control" id="fltrSectionId" name="ddlSection" asp-for-id="Id" asp-items="@(new SelectList(string.Empty, "Id", "Name"))">
+                        <option value="0">Select Assigned Section</option>
+                    </select>
+
+                    <hr />
+                    <button class="btn btn-success btn-md" formmethod="get"
+                            asp-controller="AssignedCourses"
+                            asp-action="AssignedCourses"
+                            asp-route-Year="Year"
+                            asp-route-ddlClass="ddlClass"
+                            asp-route-ddlSection="ddlSection"
+                            asp-route-ddlSubject="ddlSubject">
+                        <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+                        Search
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+
+    <link href="~/DataDictionary/DataTables/css/datatables.css" rel="stylesheet" />
+    <script src="~/DataDictionary/DataTables/js/datatables.js"></script>
+
+    <script type="text/javascript">
+       
+       $('#addYear').datepicker({
+                format: "yyyy",
+                viewMode: "years",
+                minViewMode: "years",
+                autoclose: true
+        });
+
+        $('.editYear').datepicker({
+            format: "yyyy",
+            viewMode: "years",
+            minViewMode: "years",
+            autoclose: true
+        }
+
+        );
+        
+        $('#fltrYear').datepicker({
+            format: "yyyy",
+            viewMode: "years",
+            minViewMode: "years",
+            autoclose: true
+        });
+       
+         //Displaying data for Updating
+        var flag = false;
+        $("tr td #btnEdit").on('click', function () {
+            if (flag == false) {
+                var currentRow = $(this).closest('tr');
+                currentRow = $(this).closest('tr');
+
+                $(currentRow).children('#year').children('p').hide();
+                $(currentRow).children('#class').children('p').hide();
+                $(currentRow).children('#section').children('p').hide();
+                $(currentRow).children('#course').children('p').hide();
+                $(currentRow).children('#buttons').children('.btnEditDelete').hide();
+
+                $(currentRow).children('#year').children('input').show();
+                $(currentRow).children('#class').children('#editddlClassId').show();
+                $(currentRow).children('#section').children('#editddlSectionId').show();
+                $(currentRow).children('#course').children('#editddlCourseId').show();
+                $(currentRow).children('#buttons').children('.btnUpdateCancel').show();
+
+                $(currentRow).children('#year').children('#editYear').val($(this).data('year'));
+                $(currentRow).children('#class').children('#editddlClassId').val($(this).data('class'));
+                $(currentRow).children('#section').children('#editddlSectionId').val($(this).data('section'));
+                $(currentRow).children('#course').children('#editddlCourseId').val($(this).data('course'));
+                flag = true;
+                var classId = $(this).data('class');
+                var sectionId = $(this).data('section');
+                var courseId = $(this).data('course');
+                var year = $(this).data('year');
+
+                var url1 = '@Url.Action("DropDown_AssignedSections", "AssignedCourses", new { Area = "Institution" })';
+                $.getJSON(url1, { year: year, ddlClassId: classId }, function (jsonResult) {
+                    if (jsonResult.length != 0) {
+                        var item = "<option value=0>Select Section</option>";
+                        $(currentRow).children("#section").children("#editddlSectionId").empty();
+                        $.each(jsonResult, function (i, row) {
+                            if (row.value == sectionId) {
+                                item += "<option value='" + row.value + "' selected='selected'>" + row.text + "</option>";
+                            } else
+                            item += "<option value='" + row.value + "'>" + row.text + "</option>";
+                        });
+                        $(currentRow).children("#section").children("#editddlSectionId").html(item);
+                    }
+                });
+
+                var url2 = '@Url.Action("DropDown_Subjects", "AssignedCourses", new { Area = "Institution" })';
+                $.getJSON(url2, { ddlClassId: classId }, function (jsonResult) {
+                    if (jsonResult.length != 0) {
+                        var item = "<option value=0>Select Subject</option>";
+                        $(currentRow).children("#course").children("#editddlCourseId").empty();
+                        $.each(jsonResult, function (i, row) {
+                            if (row.value == courseId) {
+                                item += "<option value='" + row.value + "' selected='selected'>" + row.text + "</option>";
+                            } else
+                            item += "<option value='" + row.value + "'>" + row.text + "</option>";
+                        });
+                        $(currentRow).children("#course").children("#editddlCourseId").html(item);
+                    }
+                });
+
+                $(currentRow).children('#class').children("#editddlClassId").on('change', function () {
+                    var url = '@Url.Action("DropDown_AssignedSections", "AssignedCourses", new { Area = "Institution" })';
+                    var classId = $(currentRow).children("#class").children('#editddlClassId').val();
+                    var year = $(currentRow).children("#year").children('#editYear').val();
+                    if (year != 0 && classId != 0) {
+                        $.getJSON(url, { year: year, ddlClassId: classId }, function (jsonResult) {
+                            if (jsonResult.length != 0) {
+                                var item = "<option value=0>Select Section</option>";
+                                $(currentRow).children("#section").children("#editddlSectionId").empty();
+                                $.each(jsonResult, function (i, row) {
+                                    item += "<option value='" + row.value + "'>" + row.text + "</option>";
+                                });
+                                $(currentRow).children("#section").children("#editddlSectionId").html(item);
+                            }
+                            else {
+                                $(currentRow).children('#section').children('#editddlSectionId').html("<option value=0>Select Section</option>");
+                            }
+
+                        });
+                    }
+                    else {
+                        $(currentRow).children("#section").children('#editddlSectionId').html("<option value=0>Select Section</option>");
+                        $(currentRow).children('#course').children('#editddlCourseId').html("<option value=0>Select Subject</option>");
+
+                    }
+
+                    var url1 = '@Url.Action("DropDown_Subjects", "AssignedCourses", new { Area = "Institution" })';
+                    $.getJSON(url1, { ddlClassId: classId }, function (jsonResult) {
+                        if (jsonResult.length != 0) {
+                            var item = "<option value=0>Select Subject</option>";
+                            $(currentRow).children("#course").children("#editddlCourseId").empty();
+                            $.each(jsonResult, function (i, row) {
+                                item += "<option value='" + row.value + "'>" + row.text + "</option>";
+                            });
+                            $(currentRow).children('#course').children('#editddlCourseId').html(item);
+                        }
+
+                        else {
+                            $(currentRow).children('#course').children('#editddlCourseId').html("<option value=0>Select Subject</option>");
+                        }
+
+                    });
+
+                });
+            } else closeInputFields(currentRow);
+
+        });
+
+        //[NOTE:Discard updating data.]
+        $("tr td #btnEditCancel").on('click', function () {
+
+                     var currentRow = $(this).closest('tr');
+
+                        $(currentRow).children('#year').children('input').hide();
+                        $(currentRow).children('#class').children('#editddlClassId').hide();
+                        $(currentRow).children('#section').children('#editddlSectionId').hide();
+                        $(currentRow).children('#course').children('#editddlCourseId').hide();
+                        $(currentRow).children('#buttons').children('.btnUpdateCancel').hide();
+
+                        $(currentRow).children('#year').children('p').show();
+                        $(currentRow).children('#class').children('p').show();
+                        $(currentRow).children('#section').children('p').show();
+                        $(currentRow).children('#course').children('p').show();
+                    $(currentRow).children('#buttons').children('.btnEditDelete').show();
+                        flag = false;
+                });
+
+                $("tr td #btnUpdate").on('click', function () {
+                    var currentRow = $(this).closest('tr');
+                    var editId = $(this).data('id');
+                    var editYear = $(currentRow).children('#year').children('#editYear').val();
+                    var editddlClassId = $(currentRow).children('#class').children('#editddlClassId').val();
+                    var editddlSectionId = $(currentRow).children('#section').children('#editddlSectionId').val();
+                    var editddlCourseId = $(currentRow).children('#course').children('#editddlCourseId').val();
+
+                    //Sending ajax request to Add method of AssignedSections Controller.
+                        $.ajax({
+                        type: 'POST',
+                            data: { 'editId': editId, 'editYear': editYear, 'editddlClassId': editddlClassId, 'editddlSectionId': editddlSectionId, 'editddlCourseId': editddlCourseId},
+                        url: '@Url.Action("Edit", "AssignedCourses", new { Area = "Institution" })',
+                        traditional: true,
+                        success: function (message) {
+                        location.reload();
+                        }
+                    });
+
+
+                });
+                function closeInputFields(test) {
+
+                }
+
+                //Hidden input fileds will be display for adding new data.
+                $("#addcourse").on('click', function () {
+                    $("#rowinput").show();
+                });
+
+                //Saving new data
+                $("#btnAddSave").on('click', function () {
+                    var addYear = $("#addYear").val();
+                    var addClassId = $("#addClassId").val();
+                    var addSectionId = $("#addSectionId").val();
+                    var addSubjectId = $("#addSubjectId").val();
+                        //Sending ajax request to Add method of AssignedSections Controller.
+                        $.ajax({
+                        type: 'POST',
+                        data: { 'addYear': addYear, 'addClassId': addClassId, 'addSectionId': addSectionId, 'addSubjectId': addSubjectId },
+                        url: '@Url.Action("Add", "AssignedCourses", new { Area = "Institution" })',
+                        traditional: true,
+                        success: function (message) {
+                        location.reload();
+                        }
+                    });
+                });
+                //Displayed input fileds will be hide for adding new data.
+                $("#btnAddCancel").on('click', function () {
+                    $("#rowinput").hide();
+                });
+
+                //Delete existing data
+                $("tr td #btnDelete").on('click', function () {
+                var delId = $(this).data('id');
+                if (confirm("Are u sure you want to delete current records?")) {
+                                $.ajax({
+                                    type: 'POST',
+                                    data: { 'delId': delId },
+                                    url: '@Url.Action("Delete", "AssignedCourses", new { Area = "Institution" })',
+                                    traditional: true,
+                                    success: function (message) {
+                                        location.reload();
+                                    }
+                                });
+                            } else { }
+    });
+
+
+    $("#addClassId").on('change', function () {
+        var url = '@Url.Action("DropDown_AssignedSections", "AssignedCourses", new { Area = "Institution" })';
+        var url1 = '@Url.Action("DropDown_Subjects", "AssignedCourses", new { Area = "Institution" })';
+        var classId = $('#addClassId').val();
+        var year = $('#addYear').val();
+
+        if (year != 0 && classId != 0) {
+            $.getJSON(url, { year: year, ddlClassId: classId }, function (jsonResult) {
+                if (jsonResult.length != 0) {
+                    var item = "<option value=0>Select Section</option>";
+                    $("#addSectionId").empty();
+                    $.each(jsonResult, function (i, row) {
+                        item += "<option value='" + row.value + "'>" + row.text + "</option>";
+                    });
+                    $('#addSectionId').html(item);
+                }
+                else {
+                    $('#addSectionId').html("<option value=0>Select Section</option>");
+                }
+            });
+
+            $.getJSON(url1, { ddlClassId: classId }, function (jsonResult) {
+                if (jsonResult.length != 0) {
+                    var item = "<option value=0>Select Subject</option>";
+                    $("#addSubjectId").empty();
+                    $.each(jsonResult, function (i, row) {
+                        item += "<option value='" + row.value + "'>" + row.text + "</option>";
+                    });
+                    $('#addSubjectId').html(item);
+                }
+                else {
+                    $('#addSubjectId').html("<option value=0>Select Subject</option>");
+                }
+            });
+        }
+        else {
+            $('#addSectionId').html("<option value=0>Select Section</option>");
+            $('#addSubjectId').html("<option value=0>Select Subject</option>");
+
+        }
+        });       
+         //[NOTE: JQuery for FilterSearch form]
+        $("#fltrClassId").on('change', function () {
+        var url = '@Url.Action("DropDown_AssignedSections", "AssignedCourses", new { Area = "Institution" })';
+            var classId = $('#fltrClassId').val();
+            var year = $('#fltrYear').val();
+        if (year != 0 && classId != 0) {
+            $.getJSON(url, { year: year, ddlClassId: classId }, function (jsonResult) {
+                if (jsonResult.length != 0) {
+                    var item = "<option value=0>Select Assigned Section</option>";
+                    $("#fltrSectionId").empty();
+                    $.each(jsonResult, function (i, row) {
+                        item += "<option value='" + row.value + "'>" + row.text + "</option>";
+                    });
+                    $('#fltrSectionId').html(item);
+                    $('#fltrCourseId').html("<option value=0>Select Assigned Course</option>");
+                }
+                else {
+                    $('#fltrSectionId').html("<option value=0>Select Assigned Section</option>");
+                    $('#fltrCourseId').html("<option value=0>Select Assigned Course</option>");
+                }
+            })
+        }
+        else {
+            $('#fltrSectionId').html("<option value=0>Select Assigned Section</option>");
+            $('#fltrCourseId').html("<option value=0>Select Assigned Course</option>");
+        }
+        });
+
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

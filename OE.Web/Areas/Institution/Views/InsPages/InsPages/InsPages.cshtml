@@ -1,0 +1,127 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexInsPagesVM
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+    <h1 class="page-title">Institution Page List</h1>
+
+    <br />
+    <br />
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Title</th>
+                <th>Action </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var data in Model.InsPages)
+            {
+                <tr>
+                    <td>
+                        @if (string.IsNullOrEmpty(data.IP300X200))
+                        {
+                            <img id="imgCommon" src="~/DataDictionary/images/defaultImages/Common.png" asp-append-version="true" alt="Picture Missing" title="No Image Available" style="width:120px; height:120px;" />
+                        }
+                        else
+                        {
+                            <img src="~/@Html.Raw(data.IP300X200)" asp-append-version="true" style="width:120px; height:120px;" />
+                        }
+                    </td>
+                    <td class="showDetails pointer">@data.Title</td>
+                    <td>
+                        <a class="btn btn-success btn-md" id="btnAddInsPageDetails"
+                           formmethod="post"
+                           asp-area="Institution"
+                           asp-controller="InsPages"
+                           asp-action="GetInsPageDetails"
+                           asp-route-insPageId="@data.Id">
+                            <span class="glyphicon glyphicon-plus" style="vertical-align:middle;margin-top: -5px"></span>
+                            Page Details
+                        </a>
+                        <button class="btn btn-primary btn-sm open-dialog" id="btnEdit" data-toggle="modal" data-target="#mdlEditInsPage" data-id="@data.Id" data-ip300x200="@data.IP300X200">
+                            <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+    <!-- #region All Modals -->
+
+    <div id="mdlEditInsPage" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="myFunction()">&times;</button>
+                    <h4 class="modal-title">Edit Institution Pages</h4>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data">
+                        <input type="hidden" name="InsPage.Id" id="txtEditId">
+                        <label>Image</label>
+                        <input type="file" id="fleEditIP300X200" name="image" class="form-control" />
+
+                        <br />
+                        <img id="editImage" alt="titleImage" asp-append-version="true" height="150" width="200" />
+                        <br />
+                        <hr />
+                        <button class="btn btn-success btn-md" formmethod="post" asp-area="Institution" asp-controller="InsPages" asp-action="EditInsPages">
+                            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                            Save
+                        </button>
+                        <button class="btn btn-danger btn-md " data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            Cancel
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- #endregion  "All Modals"-->
+    <!-- #region "All Scripts" -->
+    @section Scripts
+        {
+
+        <script type="text/javascript">
+            $('tr td #btnEdit').on('click', function () {
+                $("#txtEditId").val($(this).data("id"));               
+
+                var img = $(this).data('ip300x200');
+                if (img == "") {
+                    var commonImg = $('#imgCommon').attr('src');
+                    $('#editImage').attr('src', commonImg);
+                }
+                else {
+                    var num = Math.random();
+                    var i = "/" + $(this).data('ip300x200') + "?v=" + num;
+                    $('#editImage').attr('src', i);
+                }
+                
+
+            });
+
+            $('#fleEditIP300X200').on('change', function () {
+                var t = window.URL.createObjectURL(this.files[0]);
+                $('#editImage').attr('src', t);
+                $('#editImage').show();
+            });
+
+        </script>
+    }
+    <!-- #endregion  "All Scripts"-->
+}

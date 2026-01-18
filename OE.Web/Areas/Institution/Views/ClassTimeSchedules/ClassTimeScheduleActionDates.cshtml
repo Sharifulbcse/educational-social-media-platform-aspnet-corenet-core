@@ -1,0 +1,317 @@
+﻿
+@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexClassTimeScheduleActionDatesVM
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+    <h1 class="page-title">Class Time Schedule Action Dates</h1>
+    <br />
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-6">
+            <button class="btn btn-success btn-sm " id="btnAddClassTimeScheduleActionDate" name="btnAddClassTimeScheduleActionDate" data-toggle="modal" data-target="#mdlAddClassTimeScheduleActionDate">
+                <span class="glyphicon glyphicon-plus" style="vertical-align:middle;margin-top: -5px"></span>
+                New
+            </button>
+            <label>
+                <a tabindex="0" data-toggle="popover" data-trigger="focus" data-container="body" title="Tip: Class Time Schedule Action Date" data-content="Class Time Schedule action dates means Class Time Schedule effective start and end date.">
+                    <span class="glyphicon glyphicon-info-sign" style="top:5px; font-size:larger"></span>
+                </a>
+            </label>
+        </div>
+    </div>
+    <br />
+    <br />
+    @if (Model._ClassTimeScheduleActionDates.Count() == 0)
+    {
+        <div class="well"><b>No Record has been added yet.</b></div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>SN</th>
+                    <th>Effective Start Date </th>
+                    <th>Effective End Date </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int i = 0;}
+
+                @foreach (var data in Model._ClassTimeScheduleActionDates)
+                {
+                    i = (i + 1);
+                    <tr>
+                        <td class="showDetails pointer">
+                            <b>@i</b>
+                            <input type="hidden" name="classTimeScheduleActionDateId" id="classTimeScheduleActionDateId" value="@data.Id" />
+                        </td>
+                        <td class="showDetails pointer">
+                            @data.EffectiveStartDate.ToShortDateString()
+                        </td>
+                        <td class="showDetails pointer">
+                            @String.Format("{0:dd-MMM-yy}", data.EffectiveEndDate)
+                        </td>
+
+                        <td>
+                            <a class="btn btn-default btn-sm" formmethod="get"
+                               asp-controller="ClassTimeSchedules"
+                               asp-action="ClassTimeScheduleList"
+                               asp-route-classTimeScheduleActionDateId="@data.Id">
+                                <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                                Action
+                            </a>
+                            <button class="btn btn-primary btn-sm" id="btnEdit" name="btnEdit" data-toggle="modal" data-target="#modalEdit" data-id="@data.Id" data-sorting="@data.Sorting" data-effectiveenddate="@String.Format("{0:dd-MMM-yy}", data.EffectiveEndDate)" data-effectivestartdate="@data.EffectiveStartDate.ToShortDateString()">
+                                <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                                Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm " id="btnDelete" name="btnDelete" data-toggle="modal" data-target="#modalDelete" data-id="@data.Id">
+                                <span class="glyphicon glyphicon-trash" style="vertical-align:middle;margin-top: -5px"></span>
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        <h3 style="color:red">@ViewBag.msg</h3>
+    }
+
+    <!-- #region "All Modals" -->
+    <div id="mdlAddClassTimeScheduleActionDate" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3>Add Class Time Schedule Action Date</h3>
+                </div>
+                <div class="modal-body">
+
+                    <form enctype="multipart/form-data" id="addClassTimeScheduleActionDate">
+                        <label>Sorting</label>
+                        <input type="number" name="ClassTimeScheduleActionDate.Sorting" id="txtAddSorting" required class="form-control">
+                        <label>Effective Start Date</label>
+                        <input type="text" name="ClassTimeScheduleActionDate.EffectiveStartDate" id="txtAddESD" required class="form-control datetime">
+                        <hr />
+
+                        <button class="btn btn-success btn-md" id="btnSaveNewClassTimeScheduleActionDate">
+                            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                            Save
+                        </button>
+                        <button class="btn btn-danger btn-md " data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            Cancel
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalEdit" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Class Time Schedule Action Date</h4>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data" id="editClassTimeScheduleActionDate">
+
+                        <input type="hidden" name="ClassTimeScheduleActionDate.Id" id="editId">
+                        <label>Sorting</label>
+                        <input type="number" name="ClassTimeScheduleActionDate.Sorting" id="txtEditSorting" required class="form-control">
+                        <label>Effective Start Date</label>
+                        <input type="text" name="ClassTimeScheduleActionDate.EffectiveStartDate" id="txtEditESD" required class="form-control datetime">
+                        <label>Effective End Date</label>
+                        <input type="text" name="ClassTimeScheduleActionDate.EffectiveEndDate" id="txtEditEED" class="form-control datetime">
+                        <hr />
+
+                        <button class="btn btn-success btn-md" id="btnEditNewClassTimeScheduleActionDate">
+                            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                            Save
+                        </button>
+                        <button class="btn btn-danger btn-md " data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            Cancel
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalDelete" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form enctype="multipart/form-data" id="deleteClassTimeScheduleActionDate">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p><h3>Are you sure you want to delete this?</h3></p>
+
+                    </div>
+                    <div class="modal-footer">
+
+                        <input type="hidden" name="deleteId" id="deleteId">
+                        <button class="btn btn-md btn-success" id="btnDeleteClassTimeScheduleActionDate">
+                            <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                            Yes
+                        </button>
+
+                        <button class="btn btn-md btn-danger" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                            No
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalMessage" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Message</h4>
+                </div>
+                <div class="modal-body">
+                    <p><h3 id="txtMessage" style="color:red"></h3></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Ok
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- #endregion  "All Modals"-->
+    <!-- #region "All Scripts" -->
+
+    @section Scripts {
+
+        <script type="text/javascript">
+        //[NOTE: Tip]
+        $('[data-toggle="popover"]').popover({
+            trigger: 'focus'
+        })
+        $(".datetime").datepicker(
+            {
+                format: "dd/MM/yyyy",
+                autoclose: true
+            }
+        );
+
+
+        $("#btnSaveNewClassTimeScheduleActionDate").on('click', function (e) {
+            e.preventDefault();
+            var formData = new FormData($("#addClassTimeScheduleActionDate")[0]);
+             $.ajax({
+               type: 'POST',
+               data: formData,
+               contentType: false,
+               processData: false,
+
+               url: '@Url.Action("InsertClassTimeScheduleActionDate", "ClassTimeSchedules", new { Area = "Institution" })',
+                 success: function (response) {
+                     location.reload();
+                 },
+                 error: function (response) {
+                     alert('error: ' + response.message);
+                 },
+                 complete: function () {
+                 }
+
+             });
+        });
+
+        $("#btnEditNewClassTimeScheduleActionDate").on('click', function (e) {
+            e.preventDefault();
+            var formData = new FormData($("#editClassTimeScheduleActionDate")[0]);
+             $.ajax({
+               type: 'POST',
+               data: formData,
+               contentType: false,
+               processData: false,
+
+               url: '@Url.Action("EditClassTimeScheduleActionDate", "ClassTimeSchedules", new { Area = "Institution" })',
+                 success: function (response) {
+                     location.reload();
+                 },
+                 error: function (response) {
+                     alert('error: ' + response.message);
+                 },
+                 complete: function () {
+                 }
+
+             });
+        });
+
+            $("#btnDeleteClassTimeScheduleActionDate").on('click', function (e) {
+            e.preventDefault();
+            var deleteId = $('input#deleteId').val();
+             $.ajax({
+                type: 'POST',
+                data: { deleteId: deleteId },
+                dataType: 'json',
+                cache: false,
+               url: '@Url.Action("DeleteClassTimeScheduleActionDate", "ClassTimeSchedules", new { Area = "Institution" })',
+                success:function (data) {
+                         if (data.success == true) {
+                             location.reload();
+                         }
+                         if (data.success == false) {
+                             $('#txtMessage').text(data.message);
+                             $('#modalMessage').modal('show');
+                         }
+                     },
+                 error: function (data) {
+
+                 },
+                 complete: function (data) {
+
+                 }
+
+
+                });
+  });
+
+
+        $('tr td #btnEdit').on('click', function () {
+            $("#editId").val($(this).data("id"));
+            $("#txtEditSorting").val($(this).data("sorting"));
+            $("#txtEditESD").val($(this).data("effectivestartdate"));
+            $("#txtEditEED").val($(this).data("effectiveenddate"));
+        });
+
+
+        $('tr td #btnDelete').on('click', function () {
+            $("#deleteId").val($(this).data("id"));
+        });
+
+
+        </script>
+    }
+    <!-- #endregion  "All Scripts"-->
+}

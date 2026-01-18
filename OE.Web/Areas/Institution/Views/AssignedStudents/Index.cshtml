@@ -1,0 +1,121 @@
+﻿
+@model OE.Web.Areas.Institution.Models.IndexAssignedStudentsSearchVM
+
+<br />
+<br />
+<div class="container">
+    <div class="col-lg-9">
+        <div class="panel panel-default" style="padding:80px">
+            <form>
+                <br />
+                <label>Year</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-calendar"></i></span>
+                    <input type="text" name="Year" id="selectedYear" value="@DateTime.Now.Year" class="form-control" placeholder="Select Year" required>
+                </div>
+                <br />
+                <label>Class</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-education"></i></span>
+                    <select class="form-control" id="ddlClass" name="ClassId" asp-for-id="Id" required asp-items="@(new SelectList (ViewBag.dddlClass, "Id","Name"))">
+                        <option value="">Select Class</option>
+                    </select>
+                </div>
+                <label>Section</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-education"></i></span>
+                    <select class="form-control" id="ddlSection" name="AssignedSectionId" asp-for-id="Id" required asp-items="@(new SelectList (String.Empty, "Id","Name"))">
+                        <option value="">Select Section</option>
+                    </select>
+
+                </div>
+
+                <label>Assigned Course</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-education"></i></span>
+                    <select class="form-control" id="ddlCourse" name="AssignedCourseId" asp-for-id="Id" required asp-items="@(new SelectList ( String.Empty, "Id","Name"))">
+                        <option value="">Select Assigned Course</option>
+                    </select>
+                </div>
+
+
+                <br />
+                <input class="btn btn-success btn-lg  btn-success" type="submit" value="Search" formmethod="get"
+                       asp-controller="AssignedStudents"
+                       asp-action="AssignedStudents">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- #region "All Scripts" -->
+@section Scripts
+    {
+    <script type="text/javascript">
+    $('#selectedYear').datepicker({
+        format: "yyyy",
+        viewMode: "years",
+        minViewMode: "years",
+        autoclose: true
+    });
+        $("#ddlClass").on('change', function () {
+        var url = '@Url.Action("DropDown_AssignedSections", "AssignedStudents", new { Area = "Institution" })';
+        var classId = $('#ddlClass').val();
+            var year = $('#selectedYear').val();
+            var item = "<option value=''>Select Section</option>";
+            var item2 = "<option value=''>Select Assigned Course</option>";
+
+        if (year != 0 && classId != 0) {
+            $.getJSON(url, { year: year, ddlClassId: classId }, function (jsonResult) {
+
+                if (jsonResult.length != 0) {
+                    $("#ddlSection").empty();
+                    $.each(jsonResult, function (i, row) {
+                        item += "<option value='" + row.value + "'>" + row.text + "</option>";
+                    });
+                    $('#ddlSection').html(item);
+                    $('#ddlCourse').html(item2);
+                }
+                else {
+                    $('#ddlSection').html(item);
+                    $('#ddlCourse').html(item2);
+                }
+            })
+        }
+        else {
+            $('#ddlSection').html(item);
+            $('#ddlCourse').html(item2);
+        }
+
+    });
+
+    $("#ddlSection").on('change', function () {
+        var url = '@Url.Action("DropDown_AssignedCourses", "AssignedStudents", new { Area = "Institution" })';
+        var year = $('#selectedYear').val();
+        var classId = $('#ddlClass').val();
+        var sectionId = $('#ddlSection').val();
+        var item = "<option value=''>Select Assigned Course</option>";
+        if (sectionId == 0) {
+            $("#ddlCourse").empty();
+            $('#ddlCourse').html(item);
+        } else {
+            $.getJSON(url, { year: year, ddlClassId: classId, ddlSectionId: sectionId }, function (jsonResult) {
+
+                if (jsonResult.length != 0) {
+                    $("#ddlCourse").empty();
+                    $.each(jsonResult, function (i, row) {
+                        item += "<option value='" + row.value + "'>" + row.text + "</option>";
+                    });
+                    $('#ddlCourse').html(item);
+                } else {
+                    $('#ddlCourse').html(item);
+                }
+            });
+        }
+
+    });
+
+    </script>
+}
+<!-- #endregion  "All Scripts"-->

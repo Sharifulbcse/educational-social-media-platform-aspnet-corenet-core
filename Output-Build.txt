@@ -1,0 +1,13 @@
+﻿1>------ Build started: Project: OE.Data, Configuration: Debug Any CPU ------
+1>OE.Data -> D:\zz_WorkingOurEdu2\02_OurEduMedia\OurEduMedia_180619_B\OurEduMedia\OE.Data\bin\Debug\netcoreapp2.0\OE.Data.dll
+2>------ Build started: Project: OE.Repo, Configuration: Debug Any CPU ------
+2>OE.Repo -> D:\zz_WorkingOurEdu2\02_OurEduMedia\OurEduMedia_180619_B\OurEduMedia\OE.Repo\bin\Debug\netcoreapp2.0\OE.Repo.dll
+3>------ Build started: Project: OE.Service, Configuration: Debug Any CPU ------
+3>Services\EmployeeDetailsServ.cs(223,32,223,35): warning CS0219: The variable 'msg' is assigned but its value is never used
+3>OE.Service -> D:\zz_WorkingOurEdu2\02_OurEduMedia\OurEduMedia_180619_B\OurEduMedia\OE.Service\bin\Debug\netcoreapp2.0\OE.Service.dll
+3>Done building project "OE.Service.csproj".
+4>------ Build started: Project: OE.Web, Configuration: Debug Any CPU ------
+4>Areas\Institution\Controllers\RegistrationsController.cs(689,30,689,32): warning CS0168: The variable 'EX' is declared but never used
+4>OE.Web -> D:\zz_WorkingOurEdu2\02_OurEduMedia\OurEduMedia_180619_B\OurEduMedia\OE.Web\bin\Debug\netcoreapp2.0\OE.Web.dll
+4>Done building project "OE.Web.csproj".
+========== Build: 4 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========

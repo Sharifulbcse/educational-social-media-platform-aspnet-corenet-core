@@ -1,0 +1,73 @@
+﻿
+@{
+    Layout = null;
+}
+
+@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+
+    @model OE.Web.Areas.Institution.Models.IndexPrintSubjectListVM
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </head>
+    <body>
+        <h3 class="text-center">
+            @Model.InstitutionName
+        </h3>
+
+        <br />
+
+        @if (Model._AssignStudents.Count == 0)
+        {
+            <br />
+            <div class="well"><b>You don't have any course for this year.....</b></div>
+        }
+
+        else
+        {
+            <label>Name : <b>@Model.StudentName</b></label>
+            <br />
+            <label>Year: <b>@Model.SelectedYear</b></label>
+            <h4>Assigned Courses</h4>
+
+            <div class="table-responsive">
+                <form enctype="multipart/form-data">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#SL</th>
+                                <th>Classes</th>
+                                <th>Courses</th>
+                                <th>Sections</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int i = 1;}
+                            @foreach (var data in Model._AssignStudents)
+                             {
+                                <tr>
+                                    <td class="showDetails pointer">@i</td>
+                                    <td class="showDetails pointer">@data.ClassName</td>
+                                    <td class="showDetails pointer">@data.AssignedCourseName</td>
+                                    <td class="showDetails pointer">@data.AssignedSectionName</td>
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        }
+    </body>
+</html>
+<!-- #endregion  "All Modals"-->
+
+}

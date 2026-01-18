@@ -1,0 +1,174 @@
+﻿<div id="BackendMenu">
+    @{
+
+        string menuActorId = ViewData["menuActorId"].ToString();
+        Int64 currentSelectedTab = Convert.ToInt64(ViewData["currentSelectedTab"]);
+        switch (Convert.ToInt64(currentSelectedTab))
+        {
+            case -1:
+                {
+                    <ul class="nav tabs-left menu " >
+                        <li class="MenuItem home"><a asp-area="Institution" asp-controller="OE_Users" asp-action="Index">Home</a></li>
+                        <li class="MenuItem profile"><a asp-area="Institution" asp-controller="OE_Users" asp-action="Profile">Profile</a></li>
+                        <li class="MenuGroup"><h4>Login</h4></li>
+                        <li class="MenuItem resetPassword"><a asp-area="Institution" asp-controller="OE_Users" asp-action="ChangePassword">Change Password</a></li>
+
+                    </ul>
+                    break;
+                }
+            case 1:
+                {
+                    <ul class="nav tabs-left menu ">
+                        <li class="MenuGroup"><h4>Institution</h4></li>
+                        <li class="MenuItem institution"><a asp-area="Institution" asp-controller="OE_Institutions" asp-action="OE_Institutions">Institutions</a></li>
+                        <li class="MenuItem institution"><a asp-area="Institution" asp-controller="InsCategory" asp-action="InsCategory">Institution Category</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Employees" asp-action="Index">Institutions Admins</a></li>
+                        <li class="MenuItem license_institution"><a asp-area="Institution" asp-controller="OELicenses" asp-action="Licenses">Institutions License</a></li>
+
+                        <li class="MenuGroup"><h4>Staffs</h4></li>
+                        <li class="MenuItem staff"><a asp-area="Institution" asp-controller="OE_StaffTypes" asp-action="OE_StaffTypes">Staff Types</a></li>
+                        <li class="MenuItem staff"><a asp-area="Institution" asp-controller="OE_Staffs" asp-action="OE_Staffs">Staffs</a></li>
+                        <li class="MenuItem license_staff"><a asp-area="Institution" asp-controller="OE_Users" asp-action="OELicenses">Staff License</a></li>
+
+                         <li class="MenuGroup"><h4>Others</h4></li>
+                        <li class="MenuItem countries"><a asp-area="Institution" asp-controller="Countries" asp-action="Countries">Countries</a></li>
+
+                    </ul>
+                    break;
+                }
+            case 2:
+                {
+                    <ul class="nav tabs-left menu ">
+                        <li class="MenuGroup"><h4>Institution</h4></li>
+                        <li class="MenuItem institution"><a asp-area="Institution" asp-controller="OE_Institutions" asp-action="OE_Institutions">Institutions</a></li>
+                        
+                        <li class="MenuGroup"><h4>Clients' Employees</h4></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Employees" asp-action="Index">Employees</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Registrations" asp-action="ClientRegistrationForm">Registration Form</a></li>
+
+                        <li class="MenuGroup"><h4>Licenses</h4></li>
+                        <li class="MenuItem license_institution"><a asp-area="Institution" asp-controller="OELicenses" asp-action="Licenses">Institutions License</a></li>
+                        <li class="MenuItem license_staff"><a asp-area="Institution" asp-controller="OE_Users" asp-action="OELicenses">Writer License</a></li>
+                    </ul>
+                    break;
+                }
+            case 3:
+                {
+                    //[NOTE: OE_Writer]
+                    <ul class="nav tabs-left menu " >
+                        <li class="MenuGroup"><h4>Institution</h4></li>
+                        <li class="MenuItem institution"><a asp-area="Institution" asp-controller="OE_Institutions" asp-action="OE_Institutions">Institutions</a></li>
+
+                    </ul>
+                    break;
+                }
+            case 10:
+                {
+                    //[NOTE: Student]
+                    <ul class="nav tabs-left menu ">
+                        <li class="MenuGroup"><h4>Result</h4></li>
+                        <li class="MenuItem home"><a asp-area="Institution" asp-controller="Results" asp-action="ResultSearchByStudent">Results</a></li>
+                        <li class="MenuGroup"><h4>Attendance</h4></li>
+                        <li class="MenuItem home"><a asp-area="Institution" asp-controller="Attendances" asp-action="RespectedCoursesByStudent">View Attendances</a></li>
+                        <li class="MenuGroup"><h4>Reports</h4></li>
+                        <li class="MenuItem home"><a asp-area="Institution" asp-controller="AssignedStudents" asp-action="GetSubjectList">Courses</a></li>
+                    </ul>
+                    break;
+                }
+            case 11:
+                {
+                    //[NOTE: Admin]
+                    <ul class="nav tabs-left menu ">
+                        <li class="MenuGroup"><h4>Settings</h4></li>
+                        <li class="MenuItem departments"><a asp-area="Institution" asp-controller="OE_Institutions" asp-action="MyInstitutionDetails">Institution</a></li>
+                        <li class="MenuItem departments"><a asp-area="Institution" asp-controller="InstitutionLinks" asp-action="InstitutionLinks">Usefull Links</a></li>
+                        <li class="MenuItem departments"><a asp-area="Institution" asp-controller="InsPages" asp-action="InsPages">Institution Pages</a></li>
+
+                        <li class="MenuGroup"><h4>Institution</h4></li>
+                        <li class="MenuItem departments"><a asp-area="Institution" asp-controller="Departments" asp-action="Departments">Departments</a></li>
+
+                        <li class="MenuGroup"><h4>Employees</h4></li>
+                        <li class="MenuItem license_staff"><a asp-area="Institution" asp-controller="EmployeeTypes" asp-action="EmployeeTypes">Type</a></li>
+                        <li class="MenuItem license_staff"><a asp-area="Institution" asp-controller="EmployeeTypeCategories" asp-action="EmployeeTypeCategories">Type Categories</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Employees" asp-action="EmployeeListByAdmin">Employees</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Registrations" asp-action="RegistrationFormByAdmin">Registration Form</a></li>
+
+                        <li class="MenuGroup"><h4>Licenses</h4></li>
+                        <li class="MenuItem license_staff"><a asp-area="Institution" asp-controller="OE_Users" asp-action="OELicenses">Staff License</a></li>
+
+                    </ul>
+                    break;
+                }
+            case 12:
+                {
+                    //[NOTE: Register]
+                    <ul class="nav tabs-left menu ">
+
+                        <li class="MenuGroup"><h4>Yearly Assigned</h4></li>
+                        <li class="MenuItem exams"><a asp-area="Institution" asp-controller="AssignedSections" asp-action="AssignedSections">Assign Sections</a></li>
+                        <li class="MenuItem exams"><a asp-area="Institution" asp-controller="AssignedCourses" asp-action="AssignedCourses">Assign Courses</a></li>
+                        <li class="MenuItem exams"><a asp-area="Institution" asp-controller="AssignedTeachers" asp-action="AssignedTeachers">Assign Teachers</a></li>
+                        <li class="MenuItem exams"><a asp-area="Institution" asp-controller="AssignedStudents" asp-action="Index">Assigned Students</a></li>
+                        
+                        <li class="MenuGroup"><h4>Attendance</h4></li>
+                        <li class="MenuItem exams"><a asp-area="Institution" asp-controller="ClassTimeSchedules" asp-action="ClassTimeScheduleActionDates">Class Time Schedule</a></li>
+                       
+
+                        <li class="MenuGroup"><h4>Students</h4></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Students" asp-action="Index">Students</a></li>
+                        <li class="MenuItem results"><a asp-area="Institution" asp-controller="Results" asp-action="ResultSearchByRegister">Results</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Registrations" asp-action="StudentRegistrationForm">Registration Form</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Students" asp-action="StudentLicenses">Student Licenses</a></li>
+
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Students" asp-action="PromotionSearch">Promotion</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Registrations" asp-action="RegistrationGroups" asp-route-registrationUserTypeId="1">Reg. Group</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Registrations" asp-action="RegistrationItems" asp-route-registrationUserTypeId="1">Reg. Item</a></li>
+
+                        <li class="MenuGroup"><h4>Employees</h4></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Employees" asp-action="EmployeeListByRegister">Employees</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Registrations" asp-action="EmployeeRegistrationForm">Registration Form</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Employees" asp-action="TeacherLicenses">TeacherLicenses</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Registrations" asp-action="RegistrationGroups" asp-route-registrationUserTypeId="2">Reg. Group</a></li>
+                        <li class="MenuItem students"><a asp-area="Institution" asp-controller="Registrations" asp-action="RegistrationItems" asp-route-registrationUserTypeId="2">Reg. Item</a></li>
+
+                        <li class="MenuGroup"><h4>Settings</h4></li>
+                        <li class="MenuItem classes"><a asp-area="Institution" asp-controller="Classes" asp-action="Classes">Classes</a></li>
+                        <li class="MenuItem subject_types"><a asp-area="Institution" asp-controller="SubjectTypes" asp-action="SubjectTypes">Subject Types</a></li>
+                        <li class="MenuItem subjects"><a asp-area="Institution" asp-controller="Subjects" asp-action="Subjects">Subjects</a></li>
+                        <li class="MenuItem exams"><a asp-area="Institution" asp-controller="ExamTypes" asp-action="ExamTypes">ExamTypes</a></li>
+                        <li class="MenuItem grades"><a asp-area="Institution" asp-controller="GradeTypes" asp-action="GradeTypes">Grade Types</a></li>
+
+                        <li class="MenuItem mark_Types"><a asp-area="Institution" asp-controller="MarkTypes" asp-action="MarkTypes">Mark Types</a></li>
+                        <li class="MenuItem marks"><a asp-area="Institution" asp-controller="DistributionMarks" asp-action="DistributionMarkActionDates">Distribution Marks</a></li>
+
+                    </ul>
+                    break;
+                }
+            case 13:
+                {
+                    //[NOTE: Accountant]
+                    <ul class="nav tabs-left menu " >
+                        <li class="MenuGroup"><h4>Institution</h4></li>
+                        <li class="MenuItem home"><a asp-area="Institution" asp-controller="Students" asp-action="Students">Students</a></li>
+
+                    </ul>
+                    break;
+                }
+            case 14:
+                {
+                    //[NOTE: Teacher]
+                    <ul class="nav tabs-left menu ">
+                        <li class="MenuGroup"><h4>Result</h4></li>
+                        <li class="MenuItem home"><a asp-area="Institution" asp-controller="Results" asp-action="ResultSearchByTeacher">Results</a></li>
+                        <li class="MenuGroup"><h4>Attendance</h4></li>
+                        <li class="MenuItem home"><a asp-area="Institution" asp-controller="Attendances" asp-action="RespectedCourses"> Take Attendance</a></li>
+                        <li class="MenuItem home"><a asp-area="Institution" asp-controller="Attendances" asp-action="ViewAttendanceCourses">View Attendance</a></li>
+                        <li class="MenuItem home"><a asp-area="Institution" asp-controller="Attendances" asp-action="RespectedCoursesForDelete">Delete Attendance</a></li>
+                    </ul>
+                    break;
+                }
+        }
+
+    }
+
+</div>

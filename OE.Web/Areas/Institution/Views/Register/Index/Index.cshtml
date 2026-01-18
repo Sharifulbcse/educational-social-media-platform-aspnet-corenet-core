@@ -1,0 +1,22 @@
+﻿
+@model OE.Web.Areas.Institution.Models.IndexRegisterHomeVM
+
+@{
+    Layout = "~/Areas/Institution/Views/Shared/_LayoutMain.cshtml";
+
+}
+<h1 class="page-title">Home</h1>
+
+<body class="tab-pane">
+
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 ">
+        <img src="~/@Html.Raw(Model.EmployeeImage)" style="width:120px; height:120px;" />
+    </div>
+    <vr />
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+        <h3>@Model.EmployeeName</h3>
+        <div>Writer</div>
+    </div>
+
+
+</body>

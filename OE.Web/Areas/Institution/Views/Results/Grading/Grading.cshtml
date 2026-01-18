@@ -1,0 +1,240 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexResultsVM
+    <head>
+        <style>
+            .vertical-text {
+                transform: rotate(-90deg);
+                text-align: center;
+                margin: 127px auto 10px;
+            }
+        </style>
+     </head>
+    <h3 class="text-center"><u>Evaluation of Grade</u></h3>
+
+    <br />
+    <div class="container" style="width:100%">
+        <div class="col-md-12 row">
+            <div class="panel panel-default col-md-6" style="width:420px; height:215px; padding:0px">
+                <div class="panel-heading text-center"> Over View</div><br />
+                <!--[NOTE: OverView Data]-->
+                <div class="row" style="padding-left:10px;"><div class="col-md-6"><label>Selected Year: </label></div><div class="col-md-6">@Model.SelectedYear</div></div>
+                <div class="row" style="padding-left:10px;"><div class="col-md-6"><label>Teacher Name: </label></div><div class="col-md-6">@Model.EmployeeName</div></div>
+                <div class="row" style="padding-left:10px;"><div class="col-md-6"><label>Class: </label></div><div class="col-md-6">@Model.ClassName</div></div>
+                <div class="row" style="padding-left:10px;"><div class="col-md-6"><label>Course: </label></div><div class="col-md-6">@Model.SubjectName</div></div>
+                <div class="row" style="padding-left:10px;"><div class="col-md-6"><label>Exam Type: </label></div><div class="col-md-6">@Model.ExamTypeName</div></div>
+                <div class="row" style="padding-left:10px;"><div class="col-md-6"><label>Total Students: </label></div><div class="col-md-6">@Model._AssignedStudents.Count</div></div>
+
+            </div>
+            <div class="panel panel-default col-md-6" style="width:420px; height:215px; padding:0px">
+                <div class="panel-heading text-center"> Mark Distribution</div><br />
+                <table class="table table-striped">
+
+                    <!--[NOTE: Mark Distribution Data]-->
+                    @{ long totalPercentage = 0;}
+                    @foreach (var item in Model._DistributionMarks)
+                    {
+                        <tr>
+                            <td>@item.MarkTypeName</td>
+                            <td>@item.BreakDownInP%</td>
+                            @{totalPercentage += @item.BreakDownInP;}
+                        </tr>
+                    }
+
+                    <tr>
+                        <th>Total</th>
+                        <th>@totalPercentage%</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-12 row">
+            <form enctype="multipart/form-data">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="danger">
+                                <div class="panel-heading text-center">Grade Policy</div>
+                            </th>
+
+                            @foreach (var item in Model._ExamTypes)
+                            {
+                                if (item.IsLastExam == true)
+                                {
+                                    <th colspan="@(Model._MarkTypes.Count + 4)" class="panel-heading text-center @(Model.ExamTypeId == item.Id ? "success" : "danger")" style="height:63px"><div>@item.Name</div> </th>
+
+                                }
+                                else
+                                {
+                                    <th colspan="@(Model._MarkTypes.Count + 2)" class="panel-heading text-center @(Model.ExamTypeId == item.Id ? "success" : "danger")" style="height:63px"><div>@item.Name</div> </th>
+                                } 
+                            }
+                        </tr>
+                    </thead>
+                    <tr>
+                        <th>
+                            <table class="table table-condensed">
+                                <tr class="success">
+                                    <th>Grade</th>
+                                    <th>Range</th>
+                                    <th>Point</th>
+                                </tr>
+                                @foreach (var item in Model._GradeTypes)
+                                {
+
+                                    <tr>
+                                        <td>  @item.Grade  </td>
+                                        <td>  @item.StartMark - @item.EndMark  </td>
+                                        <td> @item.GPA   </td>
+                                    </tr>
+                                }
+
+                            </table>
+
+                        </th>
+                        
+                        @foreach (var itemOfExam in Model._ExamTypes)
+                        {
+
+                            @foreach (var item in Model._MarkTypes)
+                            {
+                                <th style="height:172px"><p class="vertical-text">@item.Name</p></th>
+                            }
+                            <th style="height:172px"><p class="vertical-text">Total</p></th>
+                            <th style="height:172px"><p class="vertical-text">Grade</p></th>
+
+                            if (itemOfExam.IsLastExam == true)
+                            {
+                                <th class="success" style="height:172px"><p class="vertical-text">Total In Exams</p></th>
+                                <th class="success" style="height:172px"><p class="vertical-text">Overall Grade</p></th>
+                            }
+
+                        }
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <div class="row">
+                                <label class="col-md-2 ">#SL </label>
+                                <label class="col-md-2 ">ID</label>
+                                <label class="col-md-8 ">Student Name</label>
+                            </div>
+                        </th>
+                    </tr>
+
+                    @{int SL = 1;
+                        int k = 0;
+
+                    }
+                    @foreach (var item in Model._AssignedStudents)
+                    {
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <p class="col-md-2"> @SL </p>
+                                    <p class="col-md-2"> @item.StudentId</p>
+                                    <p class="col-md-8"> @item.StudentName</p>
+                                </div>
+                                @{double totalInAllExam = 0;}
+                                @foreach (var item2 in Model._ExamTypes)
+                                {
+                                    long total = 0;
+
+                                    @foreach (var item3 in Model._MarkTypes)
+                                    {
+                                    <td class="text-center">
+
+                                        @{
+                                            var result = Model._Results.Where(x => x.StudentId == item.StudentId && x.ExamTypeId == item2.Id && x.MarkTypeId == item3.Id).SingleOrDefault();
+                                            total += result == null ? 0 : result.Mark;
+
+                                        }
+
+                                        <input type="hidden" name="resultsListVM[@k].Id" value="@(result == null ? 0 : result.Id)" style="width:40px;" />
+                                        <input type="hidden" name="resultsListVM[@k].StudentId" value="@item.StudentId" style="width:40px;" />
+                                        <input type="hidden" name="resultsListVM[@k].EmployeeId" value="@Model.EmployeeId" style="width:40px;" />
+                                        <input type="hidden" name="resultsListVM[@k].ClassId" value="@Model.ClassId" style="width:40px;" />
+                                        <input type="hidden" name="resultsListVM[@k].ExamTypeId" value="@item2.Id" style="width:40px;" />
+                                        <input type="hidden" name="resultsListVM[@k].SubjectId" value="@Model.SubjectId" style="width:40px;" />
+                                        <input type="hidden" name="resultsListVM[@k].MarkTypeId" value="@item3.Id" style="width:40px;" />
+                                        <input id="num" min="0" max="@item3.BreakDownInP" type="number" @(Model.ExamTypeId == item2.Id ? "" : "disabled") name="resultsListVM[@k].Mark" value="@(result == null ? 0 : result.Mark)" style="width:40px;" />
+
+                                    </td>
+
+                                    k++;
+
+                                }
+                                   totalInAllExam += (total * item2.BreakDownInP) / 100;
+                                   <td>@total</td>
+                                    <td>
+                                        @foreach (var item4 in Model._GradeTypes)
+                                        {
+                                            if (total >= item4.StartMark && total <= item4.EndMark)
+                                            {
+                                                @item4.Grade
+                                                break;
+                                            }
+                                        }
+                                    </td>
+
+                                    total = 0;
+
+                                   if (item2.IsLastExam == true)
+                                    {
+
+                                        <td>@totalInAllExam</td>
+                                        <td>
+                                            @foreach (var item4 in Model._GradeTypes)
+                                            {
+                                                if (totalInAllExam >= item4.StartMark && totalInAllExam <= item4.EndMark)
+                                                {
+                                                    @item4.Grade
+                                                    break;
+                                                }
+                                            }
+                                        </td>
+                                        totalInAllExam = 0;
+                                    }                                   
+                                }
+                            </tr>
+                            SL += 1;
+                        }
+                    <tbody></tbody>
+                </table>
+
+                <input type="hidden" name="EmployeeId" value="@Model.EmployeeId" />
+                <input type="hidden" name="SubjectId" value="@Model.AssignedCourseId" />
+                <input type="hidden" name="SectionId" value="@Model.SectionId" />
+                <input type="hidden" name="ClassId" value="@Model.ClassId" />
+                <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+                <input type="hidden" name="ExamTypeId" value="@Model.ExamTypeId" />
+                <input class="btn btn-success btn-md  btn-success" type="submit" value="Save all" formmethod="post"
+                       asp-controller="Results"
+                       asp-action="AddGrading" />
+            </form>
+        </div>
+    </div>
+}
+
+
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+
+    <script type="text/javascript">
+
+        //[NOTE: Only JS work is left.]
+        $('tr td #num').change(function () {
+            var res = $(this).val();
+        });
+
+
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

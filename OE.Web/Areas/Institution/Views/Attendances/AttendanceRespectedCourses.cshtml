@@ -1,0 +1,98 @@
+﻿@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Areas.Institution.Models.IndexAttendanceRespectedCoursesVM
+    <ol class="breadcrumb pull-left" style="background-color:transparent">
+        <li class="active">Courses Index</li>
+    </ol>
+
+    <div class="informationArea">
+        <span class="label label-info "> Institution: @Model.InstitutionName </span>
+    </div>
+
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-3 pull-right">
+            <form asp-area="Institution" asp-controller="Attendances" asp-action="RespectedCourses" method="get">
+                <div class="input-group input-group-lg">
+                    <span class="input-group"><label>Select Year:</label></span>
+                    <input type="text" name="year" id="selectedYear" value="@Model.SelectedYear" class="form-control" onchange="this.form.submit();" required>
+                </div>
+            </form>
+        </div>
+    </div>
+    if (Model._AssignTeachers.Count == 0)
+    {
+        <br />
+        <div class="well"><b>You don't have any course for this year.....</b></div>
+    }
+
+    else
+    {
+
+        <h3>Assigned Courses</h3>
+
+        <div class="table-responsive">
+            <form enctype="multipart/form-data">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>#SL</th>
+                            <th>Classes</th>
+                            <th>Courses</th>
+                            <th>Sections</th>
+                            <th> </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int i = 1;}
+                        @foreach (var data in Model._AssignTeachers)
+                        {
+                            <tr>
+                                <td class="showDetails pointer">@i</td>
+                                <td class="showDetails pointer">@data.ClassName</td>
+                                <td class="showDetails pointer">@data.AssignedCourseName</td>
+                                <td class="showDetails pointer">@data.AssignedSectionName</td>
+                                <td>                                    
+                                    <a class="btn btn-success"
+                                       asp-controller="Attendances"
+                                       asp-action="StudentListForAttendance"
+                                       asp-area="Institution"
+                                       asp-route-EmployeeId="@Model.EmployeeId"
+                                       asp-route-SelectedYear="@Model.SelectedYear"
+                                       asp-route-AssignedCourseId="@data.AssignedCourseId"
+                                       asp-route-AssignedSectionId="@data.AssignedSectionId"
+                                       asp-route-ClassId="@data.ClassId">
+                                        Take Attendance
+                                    </a>
+                                   
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    }
+    <!-- #endregion  "All Modals"-->
+
+    <!-- #region "All Scripts" -->
+    @section Scripts
+        {
+        <script type="text/javascript">
+            $('#selectedYear').datepicker({
+                format: "yyyy",
+                viewMode: "years",
+                minViewMode: "years",
+                autoclose: true
+            });
+        </script>
+    }
+    <!-- #endregion  "All Scripts"-->
+
+}

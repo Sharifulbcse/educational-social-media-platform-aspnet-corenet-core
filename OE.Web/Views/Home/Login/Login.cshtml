@@ -1,0 +1,53 @@
+﻿
+@if (ViewBag.OeErrorMessage != null)
+{
+    @ViewBag.OeErrorMessage;
+}
+else
+{
+    @model OE.Web.Models.IndexLoginVM
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3"><br /></div>
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h1 class="panel-title text-center">Login Panel</h1>
+                    </div>
+
+                    <div style="height:300px;">
+                        <form>
+                            <h5 class="text-center">@Model.InstitutionName</h5>
+                            <img src="~/@Html.Raw(Model.Logo)" class="center-block" />
+
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-user"></i></span>
+                                <input type="text" class="form-control" id="UserLoginId" name="UserLoginId" placeholder="Enter OurEdu Id" required />
+                            </div>
+                            <br />
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input type="password" class="form-control" id="Password" name="Password" placeholder="Enter Password" required />
+                            </div>
+                            <br />                            
+                            <input class="btn btn-success btn-block btn-lg" type="submit" value="Login" formmethod="post"
+                                   asp-area=""
+                                   asp-controller="Home"
+                                   asp-action="Login">
+                            <br />
+                            <a asp-area=""
+                               asp-controller="Home"
+                               asp-action="ForgetPassword">Forget Password?</a>
+                            
+                            <h4 class="text-danger text-center"><b>@ViewBag.msg</b></h4>
+                        </form>
+                    </div>
+                    <div class="col-lg-3"><br /></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+

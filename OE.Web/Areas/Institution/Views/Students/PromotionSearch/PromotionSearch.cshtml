@@ -1,0 +1,76 @@
+﻿<br />
+<br />
+<div class="container">
+    <div class="col-lg-9">
+        <h3 align="center">Students Promotion</h3>
+        <div class="panel panel-default" style="padding:130px; padding-top:10px">
+            <form>
+                <br />
+                <h4>Promoted Year:</h4>
+                <label>From</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-calendar"></i></span>
+                    <input type="text" name="fromYear" id="fromYear" value="@DateTime.Now.Year" class="form-control" onchange="onchangeevent();" required>
+                </div>
+                <label>To</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-calendar"></i></span>
+                    <input type="text" name="toYear" id="toYear" value="@(DateTime.Now.Year+1)" class="form-control" required>
+                </div>
+                <br />
+                <br />
+                <h4>Promoted Class:</h4>
+                <label>From</label>
+
+                
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-education"></i></span>
+                    <select class="form-control" name="ddlFromClass" required asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                        <option value="">Select Class</option>
+                    </select>
+                </div>
+                <label>To</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-education"></i></span>
+                    <select class="form-control" name="ddlToClass" required asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name"))">
+                        <option value="">Select Class</option>
+                    </select>
+                </div>
+                
+                <br />
+                <button class="btn btn-success btn-md" formmethod="get"
+                        asp-area="Institution"
+                        asp-controller="Students"
+                        asp-action="Promotion"
+                        asp-route-fromYear="fromYear"
+                        asp-route-toYear="toYear"
+                        asp-route-ddlFromClass="ddlFromClass"
+                        asp-route-ddlToClass="ddlToClass">
+                    <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $('#fromYear').datepicker({
+            format: "yyyy",
+            viewMode: "years",
+            minViewMode: "years",
+            autoclose: true
+        });
+
+        function onchangeevent() {
+            var txtValue = Number($("#fromYear").val()) + 1;
+            $('#toYear').val(txtValue);
+        }
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

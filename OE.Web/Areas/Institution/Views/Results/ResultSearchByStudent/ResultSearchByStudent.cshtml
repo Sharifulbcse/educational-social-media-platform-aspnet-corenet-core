@@ -1,0 +1,67 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexResultsVM
+
+
+<br />
+<br />
+<div class="container">
+    <div class="col-lg-9">
+        <h3 align="center">Results</h3>
+        <div class="panel panel-default" style="padding:130px; padding-top:10px">
+            <form enctype="multipart/form-data">
+                <br />
+                <input type="hidden" name="StudentId" id="StudentId" value="@Model.StudentId" class="form-control">
+                <label>Student Name</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-user"></i></span>
+                    <input type="text" name="StudentName" id="StudentName" value="@Model.StudentName" disabled class="form-control" required>
+                </div>
+                <br />
+                <label>Year</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-calendar"></i></span>
+                    <input type="text" name="CurrentYear" id="CurrentYear" value="@Model.CurrentYear" class="form-control" required>
+                </div>
+                <br />
+
+                <label>Exam Type</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-certificate"></i></span>
+
+                    <select class="form-control" id="ExamTypeId" name="ExamTypeId" asp-items="@(new SelectList (ViewBag.ddlExamTypeId, "Id","Name"))">
+                        <option value="0">---Select---</option>
+                    </select>
+
+                </div>
+                <br />
+
+                <button class="btn btn-success btn-md" formmethod="get"
+                        asp-area="Institution"
+                        asp-controller="Results"
+                        asp-action="ResultForStudent"
+                        asp-route-StudentId="StudentId"
+                        asp-route-CurrentYear="CurrentYear"
+                        asp-route-ExamTypeId="ExamTypeId">
+                    <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $('#CurrentYear').datepicker({
+            format: "yyyy",
+            viewMode: "years",
+            minViewMode: "years",
+            autoclose: true
+        });
+
+    </script>
+}
+
+<!-- #endregion  "All Scripts"-->

@@ -1,0 +1,211 @@
+﻿@model OE.Web.Areas.Institution.Models.IndexStudentLicensesVM
+
+<div class="informationArea">
+    <span class="label label-info "> Institution: @Model.InstitutionName </span>
+</div>
+<h1 class="page-title">Student Licenses</h1>
+
+<button class="btn btn-success btn-sm " data-toggle="modal" data-target="#mdlFilter">
+    <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+    Filter Search
+</button>
+
+<br />
+<br />
+@if (Model.StudentsListVM == null || Model.StudentsListVM.Count() == 0)
+{
+    <div class="well"><b>No Student license has been created for this filter search.</b></div>
+}
+else
+{
+    <a class="pull-right" href="#" id="basicEdit">
+        <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+        Edit All
+    </a>
+    <br />
+    <br />
+
+    @Html.ValidationMessageFor(m => m.ErrorMessage)
+    
+    <div class="row">
+        <!--#region " View and Edit Section"-->
+        <form method="post" id="basicInsertForm" enctype="multipart/form-data">
+            <div class="col-md-12" id="BasicViewSection">
+                <table class="table table-bordered table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>Roll No</th>
+                            <th>Name</th>
+                            <th>Current Class</th>
+                            <th>Is Licensed?</th>
+                            <th>User LoginId</th>
+                            <th>Message</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @{ int i = 0;}
+
+                        @foreach (var data in Model.StudentsListVM)
+                        {
+                            string Icon_Ok = "<i class=" + "\"glyphicon sign glyphicon-ok \"" + "style =" + " \"font-size:20px;color:green\"" + "></i>";
+                            string Icon_Remove = "<i class=" + "\"glyphicon sign glyphicon-remove \"" + "style =" + " \"font-size:20px;color:red\"" + "></i>";
+                            i = (i + 1);
+                            <tr>
+                                <td class="showDetails pointer">
+                                    <b>@i</b>
+                                    <input type="hidden" name="StudentsListVM[@Model.StudentsListVM.IndexOf(data)].Id" value="@data.Id" />
+                                </td>
+                                <td class="showDetails pointer">
+                                    @data.RollNo
+                                </td>
+                                <td class="showDetails pointer">
+                                    <p>@data.Name </p>
+                                </td>
+                                <td class="showDetails pointer">
+                                    <p>@data.ClassName</p>
+                                </td>
+                                <td class="showDetails pointer">
+                                    @Html.Raw(data.IsActive == true ? Icon_Ok : Icon_Remove)
+                                    <input class="chk" type="checkbox" name="StudentsListVM[@Model.StudentsListVM.IndexOf(data)].IsActive" value="true" @(data.IsActive == true ? "checked=\"checked\"" : "") style="width:40px; height:40px; cursor:pointer; display:none" />
+                                </td>
+                                <td class="showDetails pointer">
+                                    <p class="userLoginId">@data.UserLoginId</p>
+                                    <input class="form-control userloginField" type="text" name="StudentsListVM[@Model.StudentsListVM.IndexOf(data)].UserLoginId" value="@data.UserLoginId" style="display:none" />
+                                </td>
+
+                                <td class="showDetails pointer">
+                                    <!--[This is message field]-->
+                                    <div class="text-center">
+                                        <label id="@data.Id"></label>
+                                    </div>
+                                </td>
+
+                                <td class="showDetails pointer">
+                                    <button id="editBtn" class="btn btn-primary">
+                                        <span class="glyphicon glyphicon-edit" style="vertical-align:middle;margin-top: -5px"></span>
+                                        Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+                <button type="button" id="btnSaveAll" class="btn btn-success btn-md" formmethod="post"
+                        asp-controller="Students"
+                        asp-action="InsertUpdateStudentLicenses">
+                    <span class="glyphicon glyphicon-ok" style="vertical-align:middle;margin-top: -5px"></span>
+                    Apply All
+                </button>
+            </div>
+        </form>
+        <!--#endregion " View and Edit Section"-->
+    </div>
+   
+}
+
+<!-- #region "All Modals" -->
+<div id="mdlFilter" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3>Filter Search</h3>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" id="frmFilter">
+                    <label>Year</label>
+                    <input type="text" name="Year" value="@Model.CurrentYear" id="fltrYear" class="form-control">
+
+                    <label>Class</label>
+                    <select class="form-control" id="fltrClassId" name="ddlClass" asp-for-id="Id" asp-items="@(new SelectList (ViewBag.ddlClass, "Id","Name",Model.SelectedClassId))">
+                        <option value="0">All Class</option>
+                    </select>
+
+                    <label>License Type</label>
+                    <select class="form-control" id="SelectedFilterSearchId" name="SelectedFilterSearchId" asp-items="@(new SelectList(ViewBag.FilterSearch, "Value","Text", Model.SelectedFilterSearchId))"></select>
+
+                    <hr />
+                    <button class="btn btn-success btn-md" formmethod="get"
+                            asp-controller="Students"
+                            asp-action="StudentLicenses"
+                            asp-route-Year="Year"
+                            asp-route-SelectedFilterSearchId="SelectedFilterSearchId"
+                            asp-route-ddlClass="ddlClass">
+                        <span class="glyphicon glyphicon-search" style="vertical-align:middle;margin-top: -5px"></span>
+                        Search
+                    </button>
+                    <button class="btn btn-danger btn-md " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove" style="vertical-align:middle; margin-top: -5px"></span>
+                        Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--#endregion "All Modals"-->
+<!-- #region "All Scripts" -->
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#fltrYear').datepicker({
+                format: "yyyy",
+                viewMode: "years",
+                minViewMode: "years",
+                autoclose: true
+            });
+
+        });  
+        
+        var temp = false;
+        $('#basicEdit').on('click', function () {
+            if (temp == false) {
+                $(".sign").hide();
+                $(".chk").show();
+                $(".userloginField").show();
+                $(".userLoginId").hide();
+                $("#basicEdit").text("Cancel All");
+                temp = true;
+            } else {
+                $(".sign").show();
+                $(".chk").hide();
+                $(".userloginField").hide();
+                $(".userLoginId").show();
+                $("#basicEdit").text("Edit All");
+                temp = false;
+            }
+        });
+
+        $("#btnSaveAll").on('click', function () {
+            var formData = new FormData($("#basicInsertForm")[0]);
+            $.ajax({
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                url: '@Url.Action("InsertUpdateStudentLicenses", "Students", new { Area = "Institution" })',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (i, row) {
+                            //value is comming....//later work.
+                            alert(row.id +"  "+ row.message);
+                        });
+                        }
+                    else {
+                        alert("NOthing found...");
+                        }
+                    }
+
+                });
+        });
+
+    </script>
+}
+<!-- #endregion  "All Scripts"-->
