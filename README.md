@@ -16,7 +16,7 @@ The system is **currently a work in progress**, but core features are functional
 
 * ASP.NET Core
 * Entity Framework (EF6)
-* MS SQL Server 2017
+* MS SQL Server 2014
 * C#
 * Visual Studio
 
