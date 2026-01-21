@@ -46,7 +46,7 @@ The platform follows a **layered architecture**:
 ## Setup Requirements
 
 * .NET SDK
-* MS SQL Server 2017 or later
+* MS SQL Server 2014 or later
 * Visual Studio or Visual Studio Code
 
 ## Purpose
